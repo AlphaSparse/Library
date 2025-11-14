@@ -28,7 +28,7 @@ alphasparse_fill_mode_t alphasparse_fill_mode_parse(const char *arg);
 alphasparse_diag_type_t alphasparse_diag_type_parse(const char *arg);
 
 int args_get_warmup(const int argc, const char *argv[]);
-void args_help(const int argc, const char *argv[]);
+void args_help_hip(const int argc, const char *argv[]);
 bool args_get_if_check(const int argc, const char *argv[]);
 bool args_get_if_calculate_metrics(const int argc, const char *argv[]);
 bool args_get_if_warm(const int argc, const char *argv[]);

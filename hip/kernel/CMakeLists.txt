@@ -1,6 +1,13 @@
 set(alphasparse_source
+  kernel/level1/alphasparse_axpby.hip
+  kernel/level1/alphasparse_gather.hip
+  kernel/level1/alphasparse_rot.hip
+  kernel/level1/alphasparse_scatter.hip
+  kernel/level1/alphasparse_spvv.hip
   kernel/level2/alphasparse_spmv.hip
   kernel/level2/alphasparse_spsv.hip
+  kernel/level3/alphasparse_spmm.hip
   kernel/level3/alphasparse_spsm.hip
+  kernel/level3/alphasparse_spgemm.hip
   PARENT_SCOPE
 )

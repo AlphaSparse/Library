@@ -15,6 +15,7 @@
 #include <numa.h>
 #endif
 
+#ifdef __HIPNEED__
 void *alpha_malloc(size_t bytes) {
 #ifdef NUMA
   void *ret = numa_alloc_onnode(bytes, 0);
@@ -53,6 +54,7 @@ void alpha_fill_s(float *arr, const float num, const size_t size) {
 void alpha_fill_d(double *arr, const double num, const size_t size) {
   for (size_t i = 0; i < size; ++i) arr[i] = num;
 }
+#endif
 
 void alpha_fill_c(hipFloatComplex *arr, const hipFloatComplex num, const size_t size) {
   for (size_t i = 0; i < size; ++i) arr[i] = num;

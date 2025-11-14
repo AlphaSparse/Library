@@ -1,6 +1,7 @@
 #pragma once
 #include "alphasparse/spdef.h"
 #include "alphasparse/spmat.h"
+#include "alphasparse/spapi.h"
 
 int check(const int32_t *answer_data, size_t answer_size, const int32_t *result_data,
           size_t result_size);

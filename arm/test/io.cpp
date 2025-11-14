@@ -137,9 +137,9 @@ static FILE *parse_mtx_header(const char *file, ALPHA_INT64 *m_p,
         else {
           *data_type = REAL;
         }
-        if (*data_type == COMPLEX) {
-          *data_type = REAL;
-        }
+        // if (*data_type == COMPLEX) {
+        //   *data_type = REAL;
+        // }
         if (!strcmp(matrix_type_str, SYM))
           *matrix_type = SYMMETRIC;
         else if (!strcmp(matrix_type_str, GEN))
@@ -1102,10 +1102,10 @@ void mkl_read_coo(const char *file, MKL_INT *m_p, MKL_INT *n_p, MKL_INT *nnz_p,
   *m_p = (MKL_INT)m;
   *n_p = (MKL_INT)n;
   MKL_INT *fake_row_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
   MKL_INT *fake_col_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
-  float *fake_values = alpha_malloc((uint64_t)double_nnz * sizeof(float));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+  float *fake_values = (float *)alpha_malloc((uint64_t)double_nnz * sizeof(float));
   for (MKL_INT64 i = 0; i < nnz; i++, real_nnz++) {
     MKL_INT64 row, col;
     float val = 1.f;
@@ -1128,9 +1128,9 @@ void mkl_read_coo(const char *file, MKL_INT *m_p, MKL_INT *n_p, MKL_INT *nnz_p,
       fake_values[real_nnz] = val;
     }
   }
-  *row_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *col_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *values = alpha_malloc((uint64_t)real_nnz * sizeof(float));
+  *row_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *col_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *values = (float *)alpha_malloc((uint64_t)real_nnz * sizeof(float));
   *nnz_p = real_nnz;
   memcpy(*row_index, fake_row_index, (uint64_t)sizeof(MKL_INT) * real_nnz);
   memcpy(*col_index, fake_col_index, (uint64_t)sizeof(MKL_INT) * real_nnz);
@@ -1214,10 +1214,10 @@ void mkl_read_coo_d(const char *file, MKL_INT *m_p, MKL_INT *n_p,
   *m_p = (MKL_INT)m;
   *n_p = (MKL_INT)n;
   MKL_INT *fake_row_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
   MKL_INT *fake_col_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
-  double *fake_values = alpha_malloc((uint64_t)double_nnz * sizeof(double));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+  double *fake_values = (double *)alpha_malloc((uint64_t)double_nnz * sizeof(double));
   for (MKL_INT64 i = 0; i < nnz; i++, real_nnz++) {
     MKL_INT64 row, col;
     double val = 1.f;
@@ -1240,9 +1240,9 @@ void mkl_read_coo_d(const char *file, MKL_INT *m_p, MKL_INT *n_p,
       fake_values[real_nnz] = val;
     }
   }
-  *row_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *col_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *values = alpha_malloc((uint64_t)real_nnz * sizeof(double));
+  *row_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *col_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *values = (double *)alpha_malloc((uint64_t)real_nnz * sizeof(double));
   *nnz_p = real_nnz;
   memcpy(*row_index, fake_row_index, (uint64_t)sizeof(MKL_INT) * real_nnz);
   memcpy(*col_index, fake_col_index, (uint64_t)sizeof(MKL_INT) * real_nnz);
@@ -1324,11 +1324,11 @@ void mkl_read_coo_c(const char *file, MKL_INT *m_p, MKL_INT *n_p,
   *m_p = (MKL_INT)m;
   *n_p = (MKL_INT)n;
   MKL_INT *fake_row_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
   MKL_INT *fake_col_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
   MKL_Complex8 *fake_values =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_Complex8));
+      (MKL_Complex8 *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_Complex8));
   for (MKL_INT64 i = 0; i < nnz; i++, real_nnz++) {
     MKL_INT64 row, col;
     MKL_Complex8 val = {1.f, .0f};
@@ -1346,6 +1346,8 @@ void mkl_read_coo_c(const char *file, MKL_INT *m_p, MKL_INT *n_p,
       if (token != NULL) {
         val.imag = (float)atof(token);
       }
+    }else {
+      val.imag = val.real;
     }
     fake_row_index[real_nnz] = (MKL_INT)row - 1;
     fake_col_index[real_nnz] = (MKL_INT)col - 1;
@@ -1360,9 +1362,9 @@ void mkl_read_coo_c(const char *file, MKL_INT *m_p, MKL_INT *n_p,
       }
     }
   }
-  *row_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *col_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *values = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_Complex8));
+  *row_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *col_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *values = (MKL_Complex8 *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_Complex8));
   *nnz_p = real_nnz;
   memcpy(*row_index, fake_row_index, (uint64_t)sizeof(MKL_INT) * real_nnz);
   memcpy(*col_index, fake_col_index, (uint64_t)sizeof(MKL_INT) * real_nnz);
@@ -1444,11 +1446,11 @@ void mkl_read_coo_z(const char *file, MKL_INT *m_p, MKL_INT *n_p,
   *m_p = (MKL_INT)m;
   *n_p = (MKL_INT)n;
   MKL_INT *fake_row_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
   MKL_INT *fake_col_index =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
+      (MKL_INT *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_INT));
   MKL_Complex16 *fake_values =
-      alpha_malloc((uint64_t)double_nnz * sizeof(MKL_Complex16));
+      (MKL_Complex16 *)alpha_malloc((uint64_t)double_nnz * sizeof(MKL_Complex16));
   for (MKL_INT64 i = 0; i < nnz; i++, real_nnz++) {
     MKL_INT64 row, col;
     MKL_Complex16 val = {1.f, .0f};
@@ -1466,6 +1468,8 @@ void mkl_read_coo_z(const char *file, MKL_INT *m_p, MKL_INT *n_p,
       if (token != NULL) {
         val.imag = (double)atof(token);
       }
+    } else {
+      val.imag = val.real;
     }
     fake_row_index[real_nnz] = (MKL_INT)row - 1;
     fake_col_index[real_nnz] = (MKL_INT)col - 1;
@@ -1480,9 +1484,9 @@ void mkl_read_coo_z(const char *file, MKL_INT *m_p, MKL_INT *n_p,
       }
     }
   }
-  *row_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *col_index = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
-  *values = alpha_malloc((uint64_t)real_nnz * sizeof(MKL_Complex16));
+  *row_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *col_index = (MKL_INT *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_INT));
+  *values = (MKL_Complex16 *)alpha_malloc((uint64_t)real_nnz * sizeof(MKL_Complex16));
   *nnz_p = real_nnz;
   memcpy(*row_index, fake_row_index, (uint64_t)sizeof(MKL_INT) * real_nnz);
   memcpy(*col_index, fake_col_index, (uint64_t)sizeof(MKL_INT) * real_nnz);

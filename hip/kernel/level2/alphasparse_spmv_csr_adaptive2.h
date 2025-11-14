@@ -349,4 +349,6 @@ alphasparseStatus_t spmv_csr_adaptive2(alphasparseHandle_t handle,
     hipFree(d_num_rows_type1);
     hipFree(d_rows_type2);
     hipFree(d_num_rows_type2);
+
+    return ALPHA_SPARSE_STATUS_SUCCESS;
 }

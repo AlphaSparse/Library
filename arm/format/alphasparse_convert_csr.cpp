@@ -8,17 +8,17 @@
 #include "alphasparse/types.h"
 #include "convert_csr_coo.hpp"
 
-alphasparseStatus_t convert_csr_datatype_coo(const internal_spmat *source,
-                                             internal_spmat **dest,
+alphasparseStatus_t convert_csr_datatype_coo(const internal_spmat source,
+                                             internal_spmat *dest,
                                              alphasparse_datatype_t datatype) {
   if (datatype == ALPHA_SPARSE_DATATYPE_FLOAT) {
-    return convert_csr_coo<ALPHA_INT, float, _internal_spmat, _internal_spmat>((internal_spmat)source, (internal_spmat*)dest);
+    return convert_csr_coo<ALPHA_INT, float, _internal_spmat>(source, dest);
   } else if (datatype == ALPHA_SPARSE_DATATYPE_DOUBLE) {
-    return convert_csr_coo<ALPHA_INT, double, _internal_spmat, _internal_spmat>((internal_spmat)source, (internal_spmat*)dest);
+    return convert_csr_coo<ALPHA_INT, double, _internal_spmat>(source, dest);
   } else if (datatype == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX) {
-    return convert_csr_coo<ALPHA_INT, ALPHA_Complex8, _internal_spmat, _internal_spmat>((internal_spmat)source, (internal_spmat*)dest);
+    return convert_csr_coo<ALPHA_INT, ALPHA_Complex8, _internal_spmat>(source, dest);
   } else if (datatype == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX) {
-    return convert_csr_coo<ALPHA_INT, ALPHA_Complex16, _internal_spmat, _internal_spmat>((internal_spmat)source, (internal_spmat*)dest);
+    return convert_csr_coo<ALPHA_INT, ALPHA_Complex16, _internal_spmat>(source, dest);
   } else {
     return ALPHA_SPARSE_STATUS_INVALID_VALUE;
   }
@@ -99,8 +99,8 @@ alphasparseStatus_t convert_csr_datatype_coo(const internal_spmat *source,
 //     }
 // }
 
-alphasparseStatus_t convert_csr_datatype_format(const internal_spmat *source,
-                                                internal_spmat **dest,
+alphasparseStatus_t convert_csr_datatype_format(const internal_spmat source,
+                                                internal_spmat *dest,
                                                 alphasparse_datatype_t datatype,
                                                 alphasparseFormat_t format) {
   if (format == ALPHA_SPARSE_FORMAT_COO) {
@@ -152,15 +152,15 @@ alphasparseStatus_t alphasparse_convert_csr(
   alphasparseStatus_t status;
 
   if (operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE) {
-    return convert_csr_datatype_format((const internal_spmat *)source->mat,
-                                       (internal_spmat **)&dest_->mat, source->datatype_cpu,
+    return convert_csr_datatype_format((const internal_spmat )source->mat,
+                                       (internal_spmat *)&dest_->mat, source->datatype_cpu,
                                        source->format);
   } else if (operation == ALPHA_SPARSE_OPERATION_TRANSPOSE) {
     alphasparse_matrix_t AA;
     check_error_return(alphasparse_transpose(source, &AA));
     status =
-        convert_csr_datatype_format((const internal_spmat *)AA->mat,
-                                    (internal_spmat **)&dest_->mat, AA->datatype_cpu, AA->format);
+        convert_csr_datatype_format((const internal_spmat )AA->mat,
+                                    (internal_spmat *)&dest_->mat, AA->datatype_cpu, AA->format);
     alphasparse_destroy(AA);
     return status;
   } else if (operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE) {

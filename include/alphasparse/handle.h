@@ -19,24 +19,11 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define GPU_TIMER_START(elapsed_time, event_start, event_stop) \
-  do                                                           \
-  {                                                            \
-    elapsed_time = 0.0;                                        \
-    cudaEventCreate(&event_start);                             \
-    cudaEventCreate(&event_stop);                              \
-    cudaEventRecord(event_start);                              \
-  } while (0)
-
-#define GPU_TIMER_END(elapsed_time, event_start, event_stop)      \
-  do                                                              \
-  {                                                               \
-    cudaEventRecord(event_stop);                                  \
-    cudaEventSynchronize(event_stop);                             \
-    cudaEventElapsedTime(&elapsed_time, event_start, event_stop); \
-  } while (0)
-
-typedef struct
+#ifdef __HIP__
+alphasparseStatus_t
+get_alphasparse_status_for_hip_status(hipError_t status);
+#endif
+typedef struct alphasparse_handle_s // 为了能在内部引用自己，给它一个名字
 {
   // device id
   int device;
@@ -45,7 +32,7 @@ typedef struct
   // asic revision
   int asic_rev;
   // stream ; default stream is system stream NULL
-#ifdef __CUDA__  
+#ifdef __CUDA__
   cudaDeviceProp properties;
   cudaStream_t stream;
   cudaStream_t streams[6];
@@ -61,18 +48,43 @@ typedef struct
   alphasparse_layer_mode_t layer_mode;
   // device buffer
   size_t buffer_size;
-  void* buffer;
+  void *buffer;
   // device one
-  float* sone;
-  double* done;
+  float *sone;
+  double *done;
 
   // for check
   bool check_flag;
 
-  int* process;
+  int *process;
+  void* pflat_analysis_data;
+
+  alphasparse_handle_s() {
+      device = 0;
+      wavefront_size = 0;
+      asic_rev = 0;
+#ifdef __HIP__
+      stream = nullptr;
+      for(int i = 0; i < 6; ++i) streams[i] = nullptr;
+#endif
+#ifdef __CUDA__
+      stream = nullptr;
+      for(int i = 0; i < 6; ++i) streams[i] = nullptr;
+#endif
+      pointer_mode = ALPHA_SPARSE_POINTER_MODE_HOST;
+      layer_mode = ALPHA_SPARSE_LAYER_MODE_NONE;
+      buffer_size = 0;
+      buffer = nullptr;
+      sone = nullptr;
+      done = nullptr;
+      check_flag = false;
+      process = nullptr;
+      pflat_analysis_data = nullptr;
+  }
+
 } alphasparse_handle;
 
-typedef alphasparse_handle* alphasparseHandle_t;
+typedef alphasparse_handle *alphasparseHandle_t;
 
 /********************************************************************************
  * alphasparse_hyb_mat is a structure holding the alphasparse HYB matrix.
@@ -94,14 +106,14 @@ typedef struct
   // ELL matrix part
   int ell_nnz;
   int ell_width;
-  int* ell_col_ind;
-  void* ell_val;
+  int *ell_col_ind;
+  void *ell_val;
 
   // COO matrix part
   int coo_nnz;
-  int* coo_row_ind;
-  int* coo_col_ind;
-  void* coo_val;
+  int *coo_row_ind;
+  int *coo_col_ind;
+  void *coo_val;
 } _alphasparse_hyb_mat;
 
 struct _alphasparse_trm_info
@@ -110,20 +122,20 @@ struct _alphasparse_trm_info
   int max_nnz;
 
   // device array to hold row permutation
-  int* row_map;
+  int *row_map;
   // device array to hold pointer to diagonal entry
-  int* trm_diag_ind;
+  int *trm_diag_ind;
   // device pointers to hold transposed data
-  int* trmt_perm;
-  int* trmt_row_ptr;
-  int* trmt_col_ind;
+  int *trmt_perm;
+  int *trmt_row_ptr;
+  int *trmt_col_ind;
 
   // some data to verify correct execution
   int m;
   int nnz;
-  const struct alpha_matrix_descr* descr;
-  const int* trm_row_ptr;
-  const int* trm_col_ind;
+  const struct alpha_matrix_descr *descr;
+  const int *trm_row_ptr;
+  const int *trm_col_ind;
 };
 
 /********************************************************************************
@@ -152,37 +164,37 @@ struct _alphasparse_csrmv_info
 
   // data struct for csr-adaptive method
   size_t size;                    // num row blocks
-  unsigned long long* row_blocks; // row blocks
+  unsigned long long *row_blocks; // row blocks
   bool csr_adaptive_has_tuned;
   int32_t stream_num;
   int32_t vector_num;
   int32_t vectorL_num;
 
   // data struct for csr-rowpartition method
-  int* partition;
+  int *partition;
   bool csr_rowpartition_has_tuned;
 
   // data struct for csr-merge method
-  void* coordinate;
-  void* reduc_val;
-  void* reduc_row;
+  void *coordinate;
+  void *reduc_val;
+  void *reduc_row;
   int num_merge_tiles;
   bool csr_merge_has_tuned;
 
   // data xxx
-  int* r_csr_row_ptr;
-  int* r_csr_col_ind;
-  int* r_row_indx;
-  void* r_csr_val;
+  int *r_csr_row_ptr;
+  int *r_csr_col_ind;
+  int *r_row_indx;
+  void *r_csr_val;
 
   // some data to verify correct execution
   alphasparseOperation_t trans;
   int m;
   int n;
   int nnz;
-  const struct alpha_matrix_descr* descr;
-  const void* csr_row_ptr;
-  const void* csr_col_ind;
+  const struct alpha_matrix_descr *descr;
+  const void *csr_row_ptr;
+  const void *csr_col_ind;
 };
 
 /********************************************************************************
@@ -200,11 +212,11 @@ struct _alphasparse_csrgemm_info
 };
 
 /*! typedefs to opaque info structs */
-typedef struct _alphasparse_mat_info* alphasparse_mat_info_t;
-typedef struct _alphasparse_trm_info* alphasparse_trm_info_t;
-typedef struct _alphasparse_csrmv_info* alphasparse_csrmv_info_t;
-typedef struct _alphasparse_csrgemm_info* alphasparse_csrgemm_info_t;
-typedef _alphasparse_hyb_mat* alphasparse_hyb_mat_t;
+typedef struct _alphasparse_mat_info *alphasparse_mat_info_t;
+typedef struct _alphasparse_trm_info *alphasparse_trm_info_t;
+typedef struct _alphasparse_csrmv_info *alphasparse_csrmv_info_t;
+typedef struct _alphasparse_csrgemm_info *alphasparse_csrgemm_info_t;
+typedef _alphasparse_hyb_mat *alphasparse_hyb_mat_t;
 
 /********************************************************************************
  * alphasparse_mat_info is a structure holding the matrix info data that is
@@ -237,13 +249,13 @@ struct _alphasparse_mat_info
   alphasparse_csrgemm_info_t csrgemm_info;
 
   // zero pivot for csrsv, csrsm, csrilu0, csric0
-  int* zero_pivot;
+  int *zero_pivot;
 
   // numeric boost for ilu0
   int boost_enable;
   int use_double_prec_tol;
-  const void* boost_tol;
-  const void* boost_val;
+  const void *boost_tol;
+  const void *boost_val;
 };
 
 /********************************************************************************
@@ -253,7 +265,7 @@ struct _alphasparse_mat_info
  * using alphasparse_destroy_csrmv_info().
  *******************************************************************************/
 alphasparseStatus_t
-alphasparse_create_csrmv_info(alphasparse_csrmv_info_t* info);
+alphasparse_create_csrmv_info(alphasparse_csrmv_info_t *info);
 
 /********************************************************************************
  * Destroy csrmv info.
@@ -269,7 +281,7 @@ alphasparse_destroy_csrmv_info(alphasparse_csrmv_info_t info);
  * using alphasparse_destroy_trm_info().
  *******************************************************************************/
 alphasparseStatus_t
-alphasparse_create_trm_info(alphasparse_trm_info_t* info);
+alphasparse_create_trm_info(alphasparse_trm_info_t *info);
 
 /********************************************************************************
  * Destroy trm info.
@@ -281,9 +293,8 @@ alphasparse_destroy_trm_info(alphasparse_trm_info_t info);
  * alphasparse_check_trm_shared checks if the given trm info structure
  * shares its meta data with another trm info structure.
  *******************************************************************************/
-bool
-alphasparse_check_trm_shared(const alphasparse_mat_info_t info,
-                             alphasparse_trm_info_t trm);
+bool alphasparse_check_trm_shared(const alphasparse_mat_info_t info,
+                                  alphasparse_trm_info_t trm);
 
 /********************************************************************************
  * alphasparse_csrgemm_info is a structure holding the alphasparse csrgemm
@@ -292,7 +303,7 @@ alphasparse_check_trm_shared(const alphasparse_mat_info_t info,
  * end using alphasparse_destroy_csrgemm_info().
  *******************************************************************************/
 alphasparseStatus_t
-alphasparse_create_csrgemm_info(alphasparse_csrgemm_info_t* info);
+alphasparse_create_csrgemm_info(alphasparse_csrgemm_info_t *info);
 
 /********************************************************************************
  * Destroy csrgemm info.
@@ -328,16 +339,35 @@ struct _alphasparse_mat_descr
   // maximum nnz per row
   int64_t max_nnz_per_row = 0;
   bool spgemm_reuse_flag = false;
+
+  void *row_map = {};
+  void *rcsr_row_ptr = {};
+  void *rcsr_col_idx = {};
+  void *rcsr_val = {};
+  int64_t warp_num_len = 0;
+  void *d_warp_num = {};
+  void *d_level_ptr = {};
+  void *h_chain_ptr = {};
+  int64_t h_level_size = 0;
+  int64_t h_chain_size = 0;
+  void *in_degree = {};
+  void *csr_row_idx = {};
+
+  // hip
+  void *csr_rdiag = {};
+  void *rcsr_rdiag = {};
 };
 
-typedef struct _alphasparse_mat_descr* alphasparseMatDescr_t;
+typedef struct _alphasparse_mat_descr *alphasparseMatDescr_t;
 
-typedef enum {
+typedef enum
+{
   ALPHA_SPARSE_SOLVE_POLICY_NO_LEVEL = 0,
   ALPHA_SPARSE_SOLVE_POLICY_USE_LEVEL = 1
 } alphasparseSolvePolicy_t;
 
-enum info {
+enum info
+{
   ALPHA_SPARSE_OPAQUE = 0,
   ALPHA_SPARSE_TRANSPARENT = 1
 };
@@ -350,17 +380,18 @@ typedef info alpha_bsrilu02Info_t;
 typedef info alpha_bsric02Info_t;
 typedef info alphasparseColorInfo_t;
 
-typedef struct _alphasparse_mat_descr* alphasparse_mat_descr_t;
-typedef struct _alphasparse_mat_descr* alphasparseSpSVDescr_t;
-typedef struct _alphasparse_mat_descr* alphasparseSpSMDescr_t;
-typedef struct _alphasparse_mat_descr* alphasparseSpGEMMDescr_t;
+typedef struct _alphasparse_mat_descr *alphasparse_mat_descr_t;
+typedef struct _alphasparse_mat_descr *alphasparseSpSVDescr_t;
+typedef struct _alphasparse_mat_descr *alphasparseSpSMDescr_t;
+typedef struct _alphasparse_mat_descr *alphasparseSpGEMMDescr_t;
 
-typedef enum {
+typedef enum
+{
   ALPHASPARSE_DIRECTION_ROW = 0,
   ALPHASPARSE_DIRECTION_COLUMN = 1
 } alphasparseDirection_t;
 
-typedef struct _alphasparse_mat_descr* alphasparse_mat_descr_t;
+typedef struct _alphasparse_mat_descr *alphasparse_mat_descr_t;
 struct _alphasparseSpMatDescr
 {
   bool init{};
@@ -372,15 +403,15 @@ struct _alphasparseSpMatDescr
   int64_t nnz{};
   int64_t nwarps{};
 
-  int* row_data{}; //potential risk, overflow
-  int* col_data{};
-  int* ind_data{};
-  void* val_data{};
+  int *row_data{}; // potential risk, overflow
+  int *col_data{};
+  int *ind_data{};
+  void *val_data{};
 
-  const int* const_row_data{};
-  const int* const_col_data{};
-  const int* const_ind_data{};
-  const void* const_val_data{};
+  const int *const_row_data{};
+  const int *const_col_data{};
+  const int *const_ind_data{};
+  const void *const_val_data{};
 
   alphasparseIndexType_t row_type{};
   alphasparseIndexType_t col_type{};
@@ -410,8 +441,8 @@ struct _alphasparse_spvec_descr
   int64_t size{};
   int64_t nnz{};
 
-  void* idx_data{};
-  void* val_data{};
+  void *idx_data{};
+  void *val_data{};
 
   alphasparseIndexType_t idx_type{};
   alphasparseDataType data_type{};
@@ -428,10 +459,10 @@ struct _alphasparse_spmat_descr
   int64_t cols{};
   int64_t nnz{};
 
-  void* row_data{};
-  void* col_data{};
-  void* ind_data{};
-  void* val_data{};
+  void *row_data{};
+  void *col_data{};
+  void *ind_data{};
+  void *val_data{};
 
   alphasparseIndexType_t row_type{};
   alphasparseIndexType_t col_type{};
@@ -440,7 +471,7 @@ struct _alphasparse_spmat_descr
   alphasparseIndexBase_t idx_base{};
   alphasparseFormat_t format{};
 
-  struct alpha_matrix_descr* descr{};
+  struct alpha_matrix_descr *descr{};
   alphasparse_mat_info_t info{};
 };
 
@@ -449,7 +480,7 @@ struct _alphasparse_dnvec_descr
   bool init{};
 
   int64_t size{};
-  void* values{};
+  void *values{};
   alphasparseDataType data_type{};
 };
 
@@ -461,24 +492,24 @@ struct _alphasparse_dnmat_descr
   int64_t cols{};
   int64_t ld{};
 
-  void* values{};
+  void *values{};
 
   alphasparseDataType data_type{};
   alphasparseOrder_t order{};
 };
 
-typedef struct _alphasparseSpMatDescr* alphasparseSpMatDescr_t;
+typedef struct _alphasparseSpMatDescr *alphasparseSpMatDescr_t;
 
-typedef struct _alphasparse_spvec_descr* alphasparseSpVecDescr_t;
-typedef struct _alphasparse_spmat_descr* alphasparse_spmat_descr_t;
-typedef struct _alphasparse_dnvec_descr* alphasparseDnVecDescr_t;
-typedef struct _alphasparse_dnmat_descr* alphasparseDnMatDescr_t;
-typedef struct _alphasparse_dnmat_descr* alphasparse_dnmat_descr_t;
+typedef struct _alphasparse_spvec_descr *alphasparseSpVecDescr_t;
+typedef struct _alphasparse_spmat_descr *alphasparse_spmat_descr_t;
+typedef struct _alphasparse_dnvec_descr *alphasparseDnVecDescr_t;
+typedef struct _alphasparse_dnmat_descr *alphasparseDnMatDescr_t;
+typedef struct _alphasparse_dnmat_descr *alphasparse_dnmat_descr_t;
 
 alphasparseStatus_t
-alphasparse_create_mat_descr(alpha_matrix_descr_t* descr);
+alphasparse_create_mat_descr(alpha_matrix_descr_t *descr);
 alphasparseStatus_t
-alphasparse_create_mat_info(alphasparse_mat_info_t* info);
+alphasparse_create_mat_info(alphasparse_mat_info_t *info);
 alphasparseStatus_t
 alphasparse_destroy_mat_descr(alpha_matrix_descr_t descr);
 alphasparseStatus_t
@@ -486,16 +517,16 @@ alphasparse_destroy_mat_info(alphasparse_mat_info_t info);
 alphasparseStatus_t
 alphasparse_destroy_trm_info(alphasparse_trm_info_t info);
 alphasparseStatus_t
-alphasparseGetHandle(alphasparseHandle_t* handle);
+alphasparseGetHandle(alphasparseHandle_t *handle);
 alphasparseStatus_t
 alphasparse_destory_handle(alphasparseHandle_t handle);
 alphasparseStatus_t
-initHandle(alphasparseHandle_t* handle);
+initHandle(alphasparseHandle_t *handle);
 alphasparseStatus_t
-init_handle(alphasparseHandle_t* handle);
-alphasparseStatus_t 
+init_handle(alphasparseHandle_t *handle);
+alphasparseStatus_t
 alphasparse_get_handle(alphasparseHandle_t *handle);
-// alphasparseStatus_t 
+// alphasparseStatus_t
 // alphasparse_create_mat_descr(alpha_dcu_matrix_descr_t * descr);
 
 double
@@ -507,27 +538,25 @@ get_avg_time(std::vector<double> times);
 double
 get_avg_time_2(std::vector<double> times);
 
-void
-alphasparse_init_s_csr_laplace2d(int* row_ptr,
-                                 int* col_ind,
-                                 float* val,
-                                 int dim_x,
-                                 int dim_y,
-                                 int& M,
-                                 int& N,
-                                 int& nnz,
-                                 alphasparseIndexBase_t base);
+void alphasparse_init_s_csr_laplace2d(int *row_ptr,
+                                      int *col_ind,
+                                      float *val,
+                                      int dim_x,
+                                      int dim_y,
+                                      int &M,
+                                      int &N,
+                                      int &nnz,
+                                      alphasparseIndexBase_t base);
 
-void
-alphasparse_init_d_csr_laplace2d(int* row_ptr,
-                                 int* col_ind,
-                                 double* val,
-                                 int dim_x,
-                                 int dim_y,
-                                 int& M,
-                                 int& N,
-                                 int& nnz,
-                                 alphasparseIndexBase_t base);
+void alphasparse_init_d_csr_laplace2d(int *row_ptr,
+                                      int *col_ind,
+                                      double *val,
+                                      int dim_x,
+                                      int dim_y,
+                                      int &M,
+                                      int &N,
+                                      int &nnz,
+                                      alphasparseIndexBase_t base);
 
 // void
 // alphasparse_init_c_csr_laplace2d(int* row_ptr,
@@ -552,38 +581,38 @@ alphasparse_init_d_csr_laplace2d(int* row_ptr,
 //                                  alphasparseIndexBase_t base);
 
 alphasparseStatus_t
-alphasparseCreateSpVec(alphasparseSpVecDescr_t* descr,
+alphasparseCreateSpVec(alphasparseSpVecDescr_t *descr,
                        int64_t size,
                        int64_t nnz,
-                       void* indices,
-                       void* values,
+                       void *indices,
+                       void *values,
                        alphasparseIndexType_t idx_type,
                        alphasparseIndexBase_t idx_base,
                        alphasparseDataType data_type);
 
 alphasparseStatus_t
-alphasparseCreateDnVec(alphasparseDnVecDescr_t* descr,
+alphasparseCreateDnVec(alphasparseDnVecDescr_t *descr,
                        int64_t size,
-                       void* values,
+                       void *values,
                        alphasparseDataType data_type);
 
 alphasparseStatus_t
-alphasparseCreateDnMat(alphasparseDnMatDescr_t* dnMatDescr,
-                    int64_t               rows,
-                    int64_t               cols,
-                    int64_t               ld,
-                    void*                 values,
-                    alphasparseDataType          valueType,
-                    alphasparseOrder_t       order);
+alphasparseCreateDnMat(alphasparseDnMatDescr_t *dnMatDescr,
+                       int64_t rows,
+                       int64_t cols,
+                       int64_t ld,
+                       void *values,
+                       alphasparseDataType valueType,
+                       alphasparseOrder_t order);
 
 alphasparseStatus_t
-alphasparseSpSV_createDescr(alphasparseSpSVDescr_t* descr);
+alphasparseSpSV_createDescr(alphasparseSpSVDescr_t *descr);
 
 alphasparseStatus_t
-alphasparseSpSM_createDescr(alphasparseSpSMDescr_t* descr);
+alphasparseSpSM_createDescr(alphasparseSpSMDescr_t *descr);
 
 alphasparseStatus_t
-alphasparseSpGEMM_createDescr(alphasparseSpGEMMDescr_t* descr);
+alphasparseSpGEMM_createDescr(alphasparseSpGEMMDescr_t *descr);
 
 typedef enum
 {
@@ -594,7 +623,7 @@ typedef enum
 alphasparseStatus_t
 alphasparseSpMatSetAttribute(alphasparseSpMatDescr_t spMatDescr,
                              alphasparseSpMatAttribute_t attribute,
-                             void* data,
+                             void *data,
                              size_t dataSize);
 
 alphasparseStatus_t alphasparseCreateMatDescr(alphasparseMatDescr_t *descr);

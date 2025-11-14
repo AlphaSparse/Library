@@ -7,6 +7,10 @@
 
 #include <stdbool.h>
 
+// #ifndef __MKL__
+// #define __MKL__
+// #endif  
+
 #define DEFAULT_DATA_FILE ""
 #define DEFAULT_THREAD_NUM 1
 #define DEFAULT_CHECK false

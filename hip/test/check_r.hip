@@ -258,21 +258,21 @@ check(const hipDoubleComplex* answer_data,
     (double*)answer_data_d, answer_size, (double*)result_data_d, result_size, max_relative_error);
 }
 
-void
-check_int_vec(int* a, int size_ans, int* b, int size_res)
-{
-  if (size_ans != size_res) {
-    printf("size not equal %d vs %d\n", size_ans, size_res);
-    return;
-  }
-  for (int i = 0; i < size_ans; i++) {
-    if (a[i] != b[i]) {
-      printf("diff in pos %d, %d vs %d\n", i, a[i], b[i]);
-      return;
-    }
-  }
-  printf("passed!\n");
-}
+//void
+//check_int_vec(int* a, int size_ans, int* b, int size_res)
+//{
+//  if (size_ans != size_res) {
+//    printf("size not equal %d vs %d\n", size_ans, size_res);
+//    return;
+//  }
+//  for (int i = 0; i < size_ans; i++) {
+//    if (a[i] != b[i]) {
+//      printf("diff in pos %d, %d vs %d\n", i, a[i], b[i]);
+//      return;
+//    }
+//  }
+//  printf("passed!\n");
+//}
 
 // void check_matrix_equal(const alphasparse_matrix_t A, const
 // alphasparse_matrix_t B) {

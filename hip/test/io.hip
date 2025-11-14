@@ -1,8 +1,3 @@
-/**
- * @brief implement for file read and write utils
- * @author Zhuoqiang Guo <gzq9425@qq.com>
- */
-
 #include "include/io.h"
 
 #include <alphasparse.h>
@@ -14,6 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef __HIPNEED__
 FILE*
 alpha_open(const char* filename, const char* modes)
 {
@@ -30,22 +26,6 @@ alpha_close(FILE* stream)
 {
   fclose(stream);
 }
-typedef enum
-{
-  NONE_DATATYPE_T = -1,
-  REAL = 0,    /*floating*/
-  COMPLEX = 1, /*pairwise floating */
-  INTEGER = 2, /*integer but defaulted to REAL*/
-  PATTERN = 3  /* binary */
-} datatype_t;
-typedef enum
-{
-  NONE_MATRIX_TYPE_T = -1,
-  GENERAL = 0,
-  HERMITIAN = 1,
-  SYMMETRIC = 2,
-  SKEW_SYMMETRIC = 3
-} matrix_type_t;
 
 void
 result_write(const char* path,
@@ -62,6 +42,24 @@ result_write(const char* path,
   fwrite(data, ele_size, ele_num, ans);
   fclose(ans);
 }
+#endif
+
+typedef enum
+{
+  NONE_DATATYPE_T = -1,
+  REAL = 0,    /*floating*/
+  COMPLEX = 1, /*pairwise floating */
+  INTEGER = 2, /*integer but defaulted to REAL*/
+  PATTERN = 3  /* binary */
+} datatype_t;
+typedef enum
+{
+  NONE_MATRIX_TYPE_T = -1,
+  GENERAL = 0,
+  HERMITIAN = 1,
+  SYMMETRIC = 2,
+  SKEW_SYMMETRIC = 3
+} matrix_type_t;
 
 static int
 get_file_type(const char* file)
@@ -1084,6 +1082,7 @@ alpha_read_coo_pad_s(const char* file,
       file, m_p, n_p, pad, nnz_p, row_index, col_index, values);
   }
 }
+#ifdef __HIPNEED__
 void
 alpha_read_coo_pad_d(const char* file,
                      int* m_p,
@@ -1103,6 +1102,7 @@ alpha_read_coo_pad_d(const char* file,
       file, m_p, n_p, pad, nnz_p, row_index, col_index, values);
   }
 }
+#endif
 void
 alpha_read_coo_pad_c(const char* file,
                      int* m_p,
@@ -1175,6 +1175,7 @@ alpha_read_coo_s(const char* file,
 {
   alpha_read_coo_pad_s(file, m_p, n_p, 0, nnz_p, row_index, col_index, values);
 }
+#ifdef __HIPNEED__
 void
 alpha_read_coo_d(const char* file,
                  int* m_p,
@@ -1186,6 +1187,7 @@ alpha_read_coo_d(const char* file,
 {
   alpha_read_coo_pad_d(file, m_p, n_p, 0, nnz_p, row_index, col_index, values);
 }
+#endif
 void
 alpha_read_coo_c(const char* file,
                  int* m_p,

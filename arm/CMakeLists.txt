@@ -1,5 +1,6 @@
+add_definitions(-D__ARM__)   
+
 add_subdirectory(kernel)
-# add_subdirectory(format)
 
 set(alphasparse_headers_public
     ${PROJECT_SOURCE_DIR}/include/alphasparse.h
@@ -10,33 +11,15 @@ set(alphasparse_test
     test/io.cpp test/norm.cpp
 )
 
-set(alphasparse_cpu_format
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_create_coo.cpp 
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_convert_coo.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_convert_csr.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_convert_csc.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_convert_dia.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_convert_bsr.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_convert_sky.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_destroy.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/format/alphasparse_transpose.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/util/thread.cpp 
-    ${PROJECT_SOURCE_DIR}/hygon/util/partition.cpp 
-    ${PROJECT_SOURCE_DIR}/hygon/util/prefix_sum.cpp 
-    ${PROJECT_SOURCE_DIR}/hygon/util/bisearch.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/util/malloc.cpp
-    ${PROJECT_SOURCE_DIR}/hygon/util/timer.cpp
-)
+file(GLOB FORMAT_SOURCES "../hygon/format/*.cpp")
+file(GLOB FORMAT_HEADERS "../hygon/format/*.hpp")
+file(GLOB UTIL_SOURCES "../hygon/util/*.cpp")
 
-set(alphasparse_util
-    util/malloc.cpp util/thread.cpp util/timer.cpp util/partition.cpp util/prefix_sum.cpp util/bisearch.cpp
-)
+set(alphasparse_cpu_common ${FORMAT_SOURCES} ${FORMAT_HEADERS} ${UTIL_SOURCES})
 
-add_library(alphasparse ${alphasparse_headers_public} ${alphasparse_test} ${alphasparse_util} ${alphasparse_cpu_format} ${ASM_SOURCES} ${alphasparse_source} )
+add_library(alphasparse_arm ${alphasparse_headers_public} ${alphasparse_test} ${alphasparse_cpu_common} ${ASM_SOURCES} ${alphasparse_source} )
 
-# target_link_libraries(alphasparse PUBLIC
-#     mkl
-# )
-target_include_directories(alphasparse PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
+target_include_directories(alphasparse_arm PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+                                        PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/hygon>)
 
 add_subdirectory(test)

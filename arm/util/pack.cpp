@@ -1,12 +1,13 @@
 #include "alphasparse/util.h"
 #include "alphasparse/opt.h"
+#include "alphasparse/types.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
 #ifdef __aarch64__
 #include <arm_neon.h>
 #endif
-void pack_matrix_col2row_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *restrict Y, ALPHA_INT ldY)
+void pack_matrix_col2row(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
     ALPHA_INT colX4 = colX - 3;
@@ -42,7 +43,7 @@ void pack_matrix_col2row_s(const ALPHA_INT rowX, const ALPHA_INT colX, const flo
     }
 }
 
-void pack_matrix_row2col_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *restrict Y, ALPHA_INT ldY)
+void pack_matrix_row2col(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = 8 > alpha_get_thread_num() ? alpha_get_thread_num() : 8;
     ALPHA_INT rowX4 = rowX - 15;
@@ -180,7 +181,7 @@ void pack_matrix_row2col_s(const ALPHA_INT rowX, const ALPHA_INT colX, const flo
     }
 }
 
-void pack_matrix_col2row_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *restrict Y, ALPHA_INT ldY)
+void pack_matrix_col2row(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
     ALPHA_INT colX4 = colX - 3;
@@ -216,7 +217,7 @@ void pack_matrix_col2row_d(const ALPHA_INT rowX, const ALPHA_INT colX, const dou
     }
 }
 
-void pack_matrix_row2col_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *restrict Y, ALPHA_INT ldY)
+void pack_matrix_row2col(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = 8 > alpha_get_thread_num() ? alpha_get_thread_num() : 8;
     ALPHA_INT rowX4 = rowX - 7;
@@ -354,7 +355,7 @@ void pack_matrix_row2col_d(const ALPHA_INT rowX, const ALPHA_INT colX, const dou
     }
 }
 
-void pack_matrix_col2row_c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *restrict Y, ALPHA_INT ldY)
+void pack_matrix_col2row(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
     ALPHA_INT colX4 = colX - 3;
@@ -390,7 +391,7 @@ void pack_matrix_col2row_c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALP
     }
 }
 
-void pack_matrix_row2col_c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *restrict Y, ALPHA_INT ldY)
+void pack_matrix_row2col(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
     ALPHA_INT rowX4 = rowX - 3;
@@ -426,7 +427,7 @@ void pack_matrix_row2col_c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALP
     }
 }
 
-void pack_matrix_col2row_z(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *restrict Y, ALPHA_INT ldY)
+void pack_matrix_col2row(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
     ALPHA_INT colX4 = colX - 3;
@@ -462,7 +463,7 @@ void pack_matrix_col2row_z(const ALPHA_INT rowX, const ALPHA_INT colX, const ALP
     }
 }
 
-void pack_matrix_row2col_z(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *restrict Y, ALPHA_INT ldY)
+void pack_matrix_row2col(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
     ALPHA_INT rowX4 = rowX - 3;
@@ -498,7 +499,7 @@ void pack_matrix_row2col_z(const ALPHA_INT rowX, const ALPHA_INT colX, const ALP
     }
 }
 
-void pack_r2c_s_serial(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *restrict Y, ALPHA_INT ldY)
+void pack_r2cerial(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT row4 = (rowX >> 2) << 2;
     ALPHA_INT col4 = (rowX >> 2) << 2;
@@ -591,7 +592,7 @@ void pack_r2c_s_serial(const ALPHA_INT rowX, const ALPHA_INT colX, const float *
 }
 
 //equivalent to transposing of a row-major dense matrix
-void pack_r2c_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *restrict Y, ALPHA_INT ldY)
+void pack_r2c(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
 
@@ -701,10 +702,10 @@ void pack_r2c_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, cons
     }
 }
 //equivalent to transposing of a col-major dense matrix
-void pack_c2r_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *restrict Y, ALPHA_INT ldY)
+void pack_c2r(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
-    // for (ALPHA_INT r = 0; r < rowX; r++)
+    // for (ALPHA_INT r = 0; r < rowX; r++)    
     // {
     //     for (ALPHA_INT c = 0; c < colX; c++)
     //     {
@@ -827,7 +828,7 @@ void pack_c2r_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, cons
     // }
 }
 //memcpy
-void pack_r2r_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *restrict Y, ALPHA_INT ldY)
+void pack_r2r(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, const ALPHA_INT ldX, float *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
 #ifdef _OPENMP
@@ -900,7 +901,7 @@ void pack_r2r_s(const ALPHA_INT rowX, const ALPHA_INT colX, const float *X, cons
     }
 }
 
-void pack_r2c_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *restrict Y, ALPHA_INT ldY)
+void pack_r2c(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
 
@@ -1014,7 +1015,7 @@ void pack_r2c_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, con
     }
 }
 
-void pack_c2r_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *restrict Y, ALPHA_INT ldY)
+void pack_c2r(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
 #ifdef _OPENMP
@@ -1127,7 +1128,7 @@ void pack_c2r_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, con
     }
 }
 
-void pack_r2r_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *restrict Y, ALPHA_INT ldY)
+void pack_r2r(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, const ALPHA_INT ldX, double *__restrict Y, ALPHA_INT ldY)
 {
     ALPHA_INT num_threads = alpha_get_thread_num();
 #ifdef _OPENMP
@@ -1191,30 +1192,31 @@ void pack_r2r_d(const ALPHA_INT rowX, const ALPHA_INT colX, const double *X, con
 }
 
 //use double , may be hazardous
-void pack_r2c_c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *restrict Y, ALPHA_INT ldY)
+
+void pack_r2c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *__restrict Y, ALPHA_INT ldY)
 {
-    pack_r2c_d(rowX, colX, (double *)X, ldX, (double *)Y, ldY);
+    pack_r2c(rowX, colX, (double *)X, ldX, (double *)Y, ldY);
 }
 
-void pack_c2r_c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *restrict Y, ALPHA_INT ldY)
+void pack_c2r(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *__restrict Y, ALPHA_INT ldY)
 {
-    pack_c2r_d(rowX, colX, (double *)X, ldX, (double *)Y, ldY);
+    pack_c2r(rowX, colX, (double *)X, ldX, (double *)Y, ldY);
 }
 
-void pack_r2r_c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *restrict Y, ALPHA_INT ldY)
+void pack_r2r(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex8 *X, const ALPHA_INT ldX, ALPHA_Complex8 *__restrict Y, ALPHA_INT ldY)
 {
-    pack_r2r_d(rowX, colX, (double *)X, ldX, (double *)Y, ldY);
+    pack_r2r(rowX, colX, (double *)X, ldX, (double *)Y, ldY);
 }
 
-void pack_c2r_z(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *restrict Y, ALPHA_INT ldY)
+void pack_c2r(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *__restrict Y, ALPHA_INT ldY)
 {
-    pack_matrix_col2row_z(rowX, colX, X, ldX, Y, ldY);
+    pack_matrix_col2row(rowX, colX, X, ldX, Y, ldY);
 }
-void pack_r2c_z(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *restrict Y, ALPHA_INT ldY)
+void pack_r2c(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *__restrict Y, ALPHA_INT ldY)
 {
-    pack_matrix_row2col_z(rowX, colX, X, ldX, Y, ldY);
+    pack_matrix_row2col(rowX, colX, X, ldX, Y, ldY);
 }
-void pack_r2r_z(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *restrict Y, ALPHA_INT ldY)
+void pack_r2r(const ALPHA_INT rowX, const ALPHA_INT colX, const ALPHA_Complex16 *X, const ALPHA_INT ldX, ALPHA_Complex16 *__restrict Y, ALPHA_INT ldY)
 {
 
     ALPHA_INT num_threads = alpha_get_thread_num();

@@ -215,3 +215,23 @@ bool check_equal_colA_rowB(const alphasparse_matrix_t A, const alphasparse_matri
     assert(0);
   }
 }
+
+bool check_data_type(alphasparseDataType dt)
+{
+  if (dt == ALPHA_R_32F || dt == ALPHA_R_64F || dt == ALPHA_C_32F || dt == ALPHA_C_64F || dt == ALPHA_R_16F || dt == ALPHA_C_16F )
+  {
+    return true;
+  }
+  else
+    return false;  
+}
+
+bool check_data_type(alphasparse_datatype_t dt)
+{
+  if (dt == ALPHA_SPARSE_DATATYPE_FLOAT || dt == ALPHA_SPARSE_DATATYPE_DOUBLE || dt == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX || dt == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX || dt == ALPHA_SPARSE_DATATYPE_HALF_FLOAT || dt == ALPHA_SPARSE_DATATYPE_HALF_DOUBLE )
+  {
+    return true;
+  }
+  else
+    return false;  
+}

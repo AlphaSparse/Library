@@ -12,10 +12,19 @@
 #include "./spsv_csr_csc_cw/spsv_csr_u_lo_cw.h"
 #include "./spsv_csr_csc_cw/spsv_csr_u_up_cw.h"
 
+#include "./spsv_csr_n_lo_tri_cublk.h"
+
+#include "./spsv_csr_n_lo_nnz_balance.h"
+
 #include <iostream>
 #include <functional>
 #include <tuple>
 #include <map>
+
+#define _REORDER true //是否矩阵行重排
+#define _TOPO_SCHD true //是否按拓扑排序序列调度
+#define _WPR true //是否一wavefront处理一行
+#define _DYNAMIC_SCHD true //是否动态调度
 
 typedef struct
 {
@@ -51,7 +60,7 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
             printf("spsv_csr_u_lo_cw\n");
             spsv_csr_u_lo_cw<T, U>(
@@ -82,9 +91,9 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
-            printf("spsv_csr_n_lo_cw\n");
+            // printf("spsv_csr_n_lo_cw\n");
             spsv_csr_n_lo_cw<T, U>(
                 handle,
                 (T)matA->rows,
@@ -98,6 +107,64 @@ spsv_template(alphasparseHandle_t handle,
                 externalBuffer);
             break;
         }
+        case ALPHA_SPARSE_SPSV_CSR_ALG2:
+        {
+			// printf("cublk solve\n");
+            spsv_csr_n_lo_tri_cublk_solve<_REORDER, _TOPO_SCHD, _DYNAMIC_SCHD, _WPR, T, U>(
+                handle,
+                (T)matA->rows,
+                (T)matA->nnz,
+                *((U *)alpha),
+                (U *)matA->val_data,
+                (T *)matA->row_data,
+                (T *)matA->col_data,
+                (U *)spsvDescr->csr_rdiag,
+                (U *)spsvDescr->rcsr_val,
+                (T *)spsvDescr->rcsr_row_ptr,
+                (T *)spsvDescr->rcsr_col_idx,
+                (U *)spsvDescr->rcsr_rdiag,
+                (T *)spsvDescr->row_map,
+                (U *)vecX->values,
+                (U *)vecY->values,
+                externalBuffer);
+            break;
+        }
+		case ALPHA_SPARSE_SPSV_CSR_ALG3:
+		{
+			if (_REORDER)
+			{
+				spsv_csr_n_lo_nnz_balance_solve<_REORDER, T, U>(
+					handle,
+					(T)matA->rows,
+					(T)matA->nnz,
+					*((U *)alpha),
+					(U *)spsvDescr->rcsr_val,
+					(T *)spsvDescr->csr_row_idx,
+					(T *)spsvDescr->rcsr_col_idx,
+					(T *)spsvDescr->row_map,
+					(T *)spsvDescr->in_degree,
+					(U *)vecX->values,
+					(U *)vecY->values,
+					externalBuffer);
+			}
+			else
+			{
+				spsv_csr_n_lo_nnz_balance_solve<_REORDER, T, U>(
+					handle,
+					(T)matA->rows,
+					(T)matA->nnz,
+					*((U *)alpha),
+					(U *)matA->val_data,
+					(T *)spsvDescr->csr_row_idx,
+					(T *)matA->col_data,
+					(T *)spsvDescr->row_map,
+					(T *)spsvDescr->in_degree,
+					(U *)vecX->values,
+					(U *)vecY->values,
+					externalBuffer);
+			}
+			break;
+		}
         default:
         {
             printf("No algorithm chose.\n");
@@ -113,7 +180,7 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
             printf("spsv_csr_u_up_cw\n");
             spsv_csr_u_up_cw<T, U>(
@@ -144,7 +211,7 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
             printf("spsv_csr_n_up_cw\n");
             spsv_csr_n_up_cw<T, U>(
@@ -175,7 +242,7 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
             printf("spsv_csc_u_lo_cw\n");
             spsv_csc_u_lo_cw<T, U>(
@@ -207,7 +274,7 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
             printf("spsv_csc_n_lo_cw\n");
             spsv_csc_n_lo_cw<T, U>(
@@ -239,7 +306,7 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
             printf("spsv_csc_u_up_cw\n");
             spsv_csc_u_up_cw<T, U>(
@@ -271,7 +338,7 @@ spsv_template(alphasparseHandle_t handle,
     {
         switch (alg)
         {
-        case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+        case ALPHA_SPARSE_SPSV_CSR_ALG1:
         {
             printf("spsv_csc_n_up_cw\n");
             spsv_csc_n_up_cw<T, U>(
@@ -460,8 +527,6 @@ alphasparseSpSV_bufferSize(alphasparseHandle_t handle,
     // 不论是否转置，分配的数组长度都一样
     size_t vecLen = matA->rows;
     size_t nnzCnt = matA->nnz;
-    // switch (matA->format) {
-    //     case ALPHA_SPARSE_FORMAT_CSR: {
     switch (alg)
     {
     case ALPHA_SPARSE_SPSV_ALG_DEFAULT:
@@ -470,7 +535,7 @@ alphasparseSpSV_bufferSize(alphasparseHandle_t handle,
                       + vecLen * idxTypeSize; // get_val mem [get_val元素的数据类型是int32_t]
         break;
     }
-    case ALPHA_SPARSE_SPSV_ALG_CSR_CW:
+    case ALPHA_SPARSE_SPSV_CSR_ALG1:
     {
         switch (opA)
         {
@@ -495,17 +560,40 @@ alphasparseSpSV_bufferSize(alphasparseHandle_t handle,
         }
         break;
     }
+    case ALPHA_SPARSE_SPSV_CSR_ALG2:
+    {
+        hipMalloc((void **)&spsvDescr->row_map, (matA->rows) * idxTypeSize);
+        hipMalloc((void **)&spsvDescr->csr_rdiag, (matA->rows) * valTypeSize);
+        hipMalloc((void **)&spsvDescr->rcsr_row_ptr, (matA->rows + 1) * idxTypeSize);
+        hipMalloc((void **)&spsvDescr->rcsr_col_idx, (matA->nnz) * idxTypeSize);
+        hipMalloc((void **)&spsvDescr->rcsr_val, (matA->nnz) * valTypeSize);
+        hipMalloc((void **)&spsvDescr->rcsr_rdiag, (matA->rows) * valTypeSize);
+        *bufferSize = vecLen * idxTypeSize // get_value
+                    + 1 * idxTypeSize;
+        break;
+    }
+	case ALPHA_SPARSE_SPSV_CSR_ALG3:
+	{
+		hipMalloc((void **)&spsvDescr->csr_row_idx, (matA->nnz) * sizeof(int64_t));
+		hipMalloc((void **)&spsvDescr->in_degree, (matA->rows) * sizeof(int64_t));
+        if (_REORDER)
+		{
+			hipMalloc((void **)&spsvDescr->row_map, (matA->rows) * idxTypeSize);
+			hipMalloc((void **)&spsvDescr->rcsr_row_ptr, (matA->rows + 1) * idxTypeSize);
+			hipMalloc((void **)&spsvDescr->rcsr_col_idx, (matA->nnz) * idxTypeSize);
+			hipMalloc((void **)&spsvDescr->rcsr_val, (matA->nnz) * valTypeSize);
+			hipMalloc((void **)&spsvDescr->rcsr_rdiag, (matA->rows) * valTypeSize);
+		}
+		*bufferSize = vecLen * valTypeSize    // tmp_sum
+					+ vecLen * idxTypeSize  // get_value
+					+ vecLen * idxTypeSize; // in_degree
+		break;
+	}
     default:
     {
         break;
     }
     }
-    //         break;
-    //     }
-    //     default: {
-    //         break;
-    //     }
-    // }
     return ALPHA_SPARSE_STATUS_SUCCESS;
 }
 
@@ -523,16 +611,15 @@ alphasparseSpSV_solve(alphasparseHandle_t handle,
 {
     // if (matA->format == ALPHA_SPARSE_FORMAT_COO && alg == ALPHA_SPARSE_SPSV_ALG_DEFAULT) {
     // printf("***\n");
-    if (matA->format == ALPHA_SPARSE_FORMAT_COO &&
-        alg == ALPHA_SPARSE_SPSV_ALG_CSR_CW)
-    {
+    if (matA->format == ALPHA_SPARSE_FORMAT_COO)
+	{
         int m = matA->rows;
         int n = matA->cols;
         int nnz = matA->nnz;
         int *dCsrRowPtr = NULL;
         hipMalloc((void **)&dCsrRowPtr, sizeof(int) * (m + 1));
-        alphasparseXcoo2csr(matA->row_data, nnz, m, dCsrRowPtr);
-        alphasparseSpMatDescr_t matA_csr;
+		alphasparseXcoo2csr(matA->row_data, nnz, m, dCsrRowPtr);
+		alphasparseSpMatDescr_t matA_csr;
         alphasparseCreateCsr(
             &matA_csr,
             m,
@@ -547,6 +634,7 @@ alphasparseSpSV_solve(alphasparseHandle_t handle,
             matA->data_type);
         hipMemcpy(matA->row_data, matA_csr->row_data, sizeof(int) * (m + 1), hipMemcpyDeviceToDevice);
         matA->format = ALPHA_SPARSE_FORMAT_CSR;
+        alg = ALPHA_SPARSE_SPSV_CSR_ALG1;
     }
     // single real ; i32
     if (matA->row_type == ALPHA_SPARSE_INDEXTYPE_I32 && matA->data_type == ALPHA_R_32F)
@@ -586,6 +674,53 @@ spsv_anaylsis_template(alphasparseHandle_t handle,
     {
         cur_fill_mode = (matA->descr->fill_mode == ALPHA_SPARSE_FILL_MODE_LOWER) ? ALPHA_SPARSE_FILL_MODE_UPPER : ALPHA_SPARSE_FILL_MODE_LOWER;
     }
+	switch (alg)
+	{
+	    case ALPHA_SPARSE_SPSV_CSR_ALG2:
+		{
+			// printf("cublk analysis\n");
+			spsv_csr_n_lo_tri_cublk_analysis<_REORDER, _TOPO_SCHD, T, U>(
+				handle,
+	            (T)matA->rows,
+		        (T)matA->nnz,
+			    *((U *)alpha),
+				(U *)matA->val_data,
+	            (T *)matA->row_data,
+		        (T *)matA->col_data,
+			    (U *)spsvDescr->csr_rdiag,
+				(T *)spsvDescr->row_map,
+	            (T *)spsvDescr->rcsr_row_ptr,
+		        (T *)spsvDescr->rcsr_col_idx,
+			    (U *)spsvDescr->rcsr_val,
+	            (U *)spsvDescr->rcsr_rdiag,
+			    (U *)vecX->values,
+				(U *)vecY->values,
+			    externalBuffer);
+		    break;
+	    }
+		case ALPHA_SPARSE_SPSV_CSR_ALG3:
+		{
+			spsv_csr_n_lo_nnz_balance_analysis<_REORDER>(
+					handle,
+					(T)matA->rows,
+					(T)matA->nnz,
+					*((U *)alpha),
+					(T *)matA->row_data,
+					(T *)matA->col_data,
+					(U *)matA->val_data,
+					(T *)spsvDescr->csr_row_idx,
+					(T *)spsvDescr->in_degree,
+					(T *)spsvDescr->row_map,
+					(T *)spsvDescr->rcsr_row_ptr,
+					(T *)spsvDescr->rcsr_col_idx,
+					(U *)spsvDescr->rcsr_val,
+					(U *)spsvDescr->rcsr_rdiag,
+					(U *)vecX->values,
+					(U *)vecY->values,
+					externalBuffer);
+			break;
+		}
+	}
     return ALPHA_SPARSE_STATUS_SUCCESS;
 }
 
@@ -615,7 +750,8 @@ alphasparseSpSV_analysis(alphasparseHandle_t handle,
     {
         return spsv_anaylsis_template<int32_t, double>(handle, opA, alpha, matA, vecX, vecY, alg, spsvDescr, externalBuffer);
     }
-    // single complex ; i32
+    /*
+	// single complex ; i32
     if (matA->row_type == ALPHA_SPARSE_INDEXTYPE_I32 && matA->data_type == ALPHA_C_32F)
     {
         return spsv_anaylsis_template<int32_t, hipFloatComplex>(handle, opA, alpha, matA, vecX, vecY, alg, spsvDescr, externalBuffer);
@@ -625,22 +761,7 @@ alphasparseSpSV_analysis(alphasparseHandle_t handle,
     {
         return spsv_anaylsis_template<int32_t, hipDoubleComplex>(handle, opA, alpha, matA, vecX, vecY, alg, spsvDescr, externalBuffer);
     }
+	*/
 
-    // if (alg == ALPHA_SPARSE_SPSV_ALG_CSR_YUENYEUNG) {
-    //  int m = matA->rows;
-    //  int nnz = matA->nnz;
-    //  int *row_nnz_cnt = (int *)malloc(m * sizeof(int));
-    //  int len = 0;
-    //  int *warp_num = (int *)malloc(m * sizeof(int));
-    //  int border = 32;
-    //  printf("analysis\n");
-    //  get_csr_row_nnz_cnt(matA->row_data, matA->col_data, m, nnz, row_nnz_cnt);
-    //  warp_divide(row_nnz_cnt, m, border, &len, warp_num);
-    //  spsvDescr->warp_num = (int *)malloc(len * sizeof(int));
-    //  spsvDescr->warp_num_len = len;
-    //  memcpy(spsvDescr->warp_num, warp_num, len * sizeof(int));
-    //  free(row_nnz_cnt);
-    //  free(warp_num);
-    // }
     return ALPHA_SPARSE_STATUS_SUCCESS;
 }

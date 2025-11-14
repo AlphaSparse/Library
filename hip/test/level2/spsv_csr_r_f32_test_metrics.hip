@@ -12,7 +12,7 @@
 #include "../../format/alphasparse_create_csr.h"
 #include "../../format/coo2csr.h"
 #include "../../format/coo_order.h"
-#include "../include/gputimer.h"
+
 #include "../include/spsv/mat_adjust.h"
 #include "../include/common.h"
 #include "alphasparse.h"
@@ -59,7 +59,7 @@ DATA_TYPE *cuda_y;
 float error;
 
 // parms for kernel
-const DATA_TYPE alpha = 2.f;
+const DATA_TYPE alpha = 2.0;
 
 hipDataType cuda_datatype;
 alphasparseDataType alpha_datatype;
@@ -92,10 +92,10 @@ cuda_spsv()
     int *dAcol = NULL;
     DATA_TYPE *dAval = NULL;
 
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dCsrRowPtr, sizeof(int) * (m + 1)));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dCsrRowPtr, sizeof(int) * (m + 1)));
     CHECK_CUDA(hipMemcpy(dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAcol, coo_col_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAval, coo_values, nnz * sizeof(DATA_TYPE), hipMemcpyHostToDevice));
@@ -175,6 +175,7 @@ cuda_spsv()
     cuda_time_analysis = get_avg_time_2(times_analysis);
 
     std::vector<double> times_solve;
+    // printf("time_solve\n");
     for (int i = 0; i < iter + warmup; i++)
     {
         float time_solve;
@@ -187,8 +188,7 @@ cuda_spsv()
                              vecY,
                              cuda_datatype,
                              cuda_alg,
-                             spsvDescr,
-                             dBuffer));
+                             spsvDescr));
         // hipDeviceSynchronize();
         GPU_TIMER_END(time_solve, event_start, event_stop);
         // printf("%.4lf\n", time_solve);
@@ -198,9 +198,6 @@ cuda_spsv()
         }
     }
     cuda_time_solve_avg = get_avg_time_2(times_solve);
-    // cuda_bandwidth = static_cast<double>(sizeof(float)) * (2 * m + nnz) +
-    //                  sizeof(int) * (m + 1 + nnz) / cuda_time_solve_avg / 1e6;
-    // cuda_gflops = static_cast<double>(2 * nnz) / cuda_time_solve_avg / 1e6;
 
     CHECK_CUDA(hipMemcpy(cuda_y, dY, sizeof(DATA_TYPE) * m, hipMemcpyDeviceToHost));
 
@@ -235,10 +232,10 @@ alpha_spsv()
     int *dAcol = NULL;
     DATA_TYPE *dAval = NULL;
 
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dCsrRowPtr, sizeof(int) * (m + 1)));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dCsrRowPtr, sizeof(int) * (m + 1)));
 
     CHECK_CUDA(hipMemcpy(dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAcol, coo_col_index, nnz * sizeof(int), hipMemcpyHostToDevice));
@@ -291,8 +288,6 @@ alpha_spsv()
 
     CHECK_CUDA(hipMalloc(&dBuffer, bufferSize))
 
-    GPU_TIMER_START(alpha_time_analysis, event_start, event_stop);
-    
     std::vector<double> times_analysis;
     // printf("time_analysis\n");
     for (int i = 0; i < iter + warmup; i++)
@@ -320,6 +315,7 @@ alpha_spsv()
     alpha_time_analysis = get_avg_time_2(times_analysis);
 
     std::vector<double> times_solve;
+    // printf("time_solve\n");
     for (int i = 0; i < iter + warmup; i++)
     {
         float time_solve;
@@ -343,9 +339,6 @@ alpha_spsv()
         }
     }
     alpha_time_solve_avg = get_avg_time_2(times_solve);
-    // alpha_bandwidth = static_cast<double>(sizeof(float)) * (2 * m + nnz) +
-    //                   sizeof(int) * (m + 1 + nnz) / alpha_time_solve_avg / 1e6;
-    // alpha_gflops = static_cast<double>(2 * nnz) / alpha_time_solve_avg / 1e6;
 
     CHECK_CUDA(hipMemcpy(ict_y, dY, sizeof(DATA_TYPE) * m, hipMemcpyDeviceToHost));
 
@@ -361,7 +354,7 @@ alpha_spsv()
 int main(int argc, const char *argv[])
 {
     // args
-    args_help(argc, argv);
+    args_help_hip(argc, argv);
     file = args_get_data_file(argc, argv);
     metrics_file = args_save_metrics_file(argc, argv);
     check_flag = args_get_if_check(argc, argv);
@@ -397,10 +390,9 @@ int main(int argc, const char *argv[])
         // printf("%s - the row number and the column number are NOT equal!\n", file);
         return 0;
     }
-    if (nnz < 1e+6)
-    {
-        return 0;
-    }
+    // if (nnz < 1e+6) {
+    //     return 0;
+    // }
 
     coo_order<int32_t, DATA_TYPE>(nnz, coo_row_index, coo_col_index, coo_values);
 
@@ -412,11 +404,15 @@ int main(int argc, const char *argv[])
     // 矩阵行元素求和归一化
     mat_adjust_nnz_s(coo_row_index, coo_col_index, coo_values, m, n, nnz, alpha_fillmode, alpha_diagtype);
 
+    // 只取三角部分
+    mat_get_triangular_part(&coo_row_index, &coo_col_index, &coo_values, m, n, nnz, alpha_fillmode);
+	
     // init x y
     x_val = (DATA_TYPE *)alpha_malloc(n * sizeof(DATA_TYPE));
 
     alpha_fill_random(x_val, 0, n);
 
+    // int execute_type = 0;
     int execute_type = 1;
     if (execute_type == 0)
     {
@@ -529,10 +525,11 @@ int main(int argc, const char *argv[])
             outfile << "\n";
             outfile.close();
         }
-        printf("%.6lf,", speedup_analysis);
-        printf("%.6lf,", speedup_solve);
-        printf("%.6lf,", speedup);
-        printf("\n");
+//        printf("%.6lf,", speedup_analysis);
+//        printf("%.6lf,", speedup_solve);
+		printf("%.6lf,%.6lf,", cuda_time_total, alpha_time_total);
+		printf("%.6lf,", speedup);
+//        printf("\n");
         if (check_flag)
         {
             std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);

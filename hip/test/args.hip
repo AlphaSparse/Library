@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char *stort_options = "";
-struct option long_options[] = {
+const char *hip_stort_options = "";
+struct option hip_long_options[] = {
     {"help", no_argument, NULL, 1},
     {"check", no_argument, NULL, 2},
     {"thread-num", optional_argument, NULL, 3},
@@ -58,7 +58,7 @@ struct option long_options[] = {
     {"alg_num", optional_argument, NULL, 36},
 };
 
-void print_help()
+void print_help_hip()
 {
   printf("--help\n\thelp\n\n");
   printf("--check\n\tcheck or not,default:no check\n\n");
@@ -98,23 +98,23 @@ void print_help()
   exit(-1);
 }
 
-void args_help(const int argc, const char *argv[])
+void args_help_hip(const int argc, const char *argv[])
 {
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 1)
-      print_help();
+      print_help_hip();
 }
-
+#ifdef __HIPNEED__
 bool args_get_if_check(const int argc, const char *argv[])
 {
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 2)
     {
@@ -123,26 +123,12 @@ bool args_get_if_check(const int argc, const char *argv[])
   return DEFAULT_CHECK;
 }
 
-bool args_get_if_calculate_metrics(const int argc, const char *argv[])
-{
-  optind = 0;
-  int opt;
-  int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
-                                 &option_index)) != -1)
-    if (opt == 33)
-    {
-      return true;
-    }
-  return false;
-}
-
 int args_get_thread_num(const int argc, const char *argv[])
 {
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 3)
     {
@@ -156,7 +142,7 @@ int args_get_cols(const int argc, const char *argv[], int k)
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 18)
     {
@@ -170,7 +156,7 @@ int args_get_rows(const int argc, const char *argv[], int k)
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 19)
     {
@@ -184,7 +170,7 @@ int args_get_batch_count(const int argc, const char *argv[], int k)
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 31)
     {
@@ -198,7 +184,7 @@ int args_get_batch_stride(const int argc, const char *argv[], int k)
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 32)
     {
@@ -212,7 +198,7 @@ int args_get_iter(const int argc, const char *argv[])
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 20)
     {
@@ -225,7 +211,7 @@ int args_get_nnz(const int argc, const char *argv[])
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 28)
     {
@@ -238,7 +224,7 @@ int args_get_blocksize(const int argc, const char *argv[])
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 29)
     {
@@ -251,7 +237,7 @@ int args_get_meta(const int argc, const char *argv[])
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 30)
     {
@@ -264,7 +250,7 @@ int args_get_param0(const int argc, const char *argv[])
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 25)
     {
@@ -278,7 +264,7 @@ int args_get_param1(const int argc, const char *argv[])
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 26)
     {
@@ -292,7 +278,7 @@ bool args_get_if_warm(const int argc, const char *argv[])
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 23)
     {
@@ -301,26 +287,12 @@ bool args_get_if_warm(const int argc, const char *argv[])
   return DEFAULT_WARM;
 }
 
-int args_get_warmup(const int argc, const char *argv[]) {
-  optind = 0;
-  int opt; 
-  int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
-                                 &option_index)) != -1) {
-    if (opt == 37)
-    {
-      return atoi(optarg);
-    }
-  }
-  return DEFAULT_WARMUP;
-}
-
 const char *args_get_data_file(const int argc, const char *argv[])
 {
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 12)
     {
@@ -335,7 +307,7 @@ const char *args_get_data_fileA(const int argc, const char *argv[])
   int opt;
   int option_index;
   char *data_file = NULL;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 13)
     {
@@ -355,7 +327,7 @@ const char *args_get_data_fileB(const int argc, const char *argv[])
   int opt;
   int option_index;
   char *data_file = NULL;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 14)
     {
@@ -375,7 +347,7 @@ const char *args_get_data_fileC(const int argc, const char *argv[])
   int opt;
   int option_index;
   char *data_file = NULL;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 24)
     {
@@ -389,46 +361,18 @@ const char *args_get_data_fileC(const int argc, const char *argv[])
   return ret_data_file;
 }
 
-const char *args_save_metrics_file(const int argc, const char *argv[])
-{
-  optind = 0;
-  int opt;
-  int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
-                                 &option_index)) != -1)
-    if (opt == 34)
-    {
-      return optarg;
-    }
-  return "metrics.txt";
-}
-
 const char *args_get_libname(const int argc, const char *argv[])
 {
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == 35)
     {
       return optarg;
     }
   return "";
-}
-
-const int args_get_alg_num(const int argc, const char *argv[])
-{
-  optind = 0;
-  int opt;
-  int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
-                                 &option_index)) != -1)
-    if (opt == 36)
-    {
-      return atoi(optarg);
-    }
-  return 0;
 }
 
 alphasparse_layout_t alpha_args_get_layout(const int argc, const char *argv[])
@@ -487,7 +431,7 @@ alphasparse_layout_t alpha_args_get_layout_helper(const int argc, const char *ar
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == layout_opt)
     {
@@ -501,7 +445,7 @@ alphasparseFormat_t alpha_args_get_format_helper(const int argc, const char *arg
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == format_opt)
     {
@@ -515,7 +459,7 @@ alphasparseDataType alpha_args_get_data_type_helper(const int argc, const char *
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == format_opt)
     {
@@ -531,7 +475,7 @@ struct alpha_matrix_descr alpha_args_get_matrix_descr_helper(const int argc, con
   int opt;
   int option_index;
   struct alpha_matrix_descr ret = {.type = ALPHA_SPARSE_MATRIX_TYPE_GENERAL};
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == type_opt)
       ret.type = alphasparse_matrix_type_parse(optarg);
@@ -548,7 +492,7 @@ alphasparseOperation_t alpha_args_get_trans_helper(const int argc, const char *a
   optind = 0;
   int opt;
   int option_index;
-  while ((opt = getopt_long_only(argc, (char *const *)argv, stort_options, long_options,
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
                                  &option_index)) != -1)
     if (opt == trans_opt)
       return alphasparse_operation_parse(optarg);
@@ -689,4 +633,61 @@ alphasparse_diag_type_t alphasparse_diag_type_parse(const char *arg)
     return ALPHA_SPARSE_DIAG_UNIT;
   printf("invalid diag A value!!! %s\n", optarg);
   exit(-1);
+}
+#endif
+
+int args_get_warmup(const int argc, const char *argv[]) {
+  optind = 0;
+  int opt; 
+  int option_index;
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
+                                 &option_index)) != -1) {
+    if (opt == 37)
+    {
+      return atoi(optarg);
+    }
+  }
+  return DEFAULT_WARMUP;
+}
+
+const int args_get_alg_num(const int argc, const char *argv[])
+{
+  optind = 0;
+  int opt;
+  int option_index;
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
+                                 &option_index)) != -1)
+    if (opt == 36)
+    {
+      return atoi(optarg);
+    }
+  return 0;
+}
+
+bool args_get_if_calculate_metrics(const int argc, const char *argv[])
+{
+  optind = 0;
+  int opt;
+  int option_index;
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
+                                 &option_index)) != -1)
+    if (opt == 33)
+    {
+      return true;
+    }
+  return false;
+}
+
+const char *args_save_metrics_file(const int argc, const char *argv[])
+{
+  optind = 0;
+  int opt;
+  int option_index;
+  while ((opt = getopt_long_only(argc, (char *const *)argv, hip_stort_options, hip_long_options,
+                                 &option_index)) != -1)
+    if (opt == 34)
+    {
+      return optarg;
+    }
+  return "metrics.txt";
 }

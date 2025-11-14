@@ -12,7 +12,7 @@
 #include "../../format/alphasparse_create_csr.h"
 #include "../../format/coo2csr.h"
 #include "../../format/coo_order.h"
-#include "../include/gputimer.h"
+
 #include "../include/spsv/mat_adjust.h"
 #include "../include/common.h"
 #include "alphasparse.h"
@@ -95,10 +95,10 @@ cuda_spsm() {
     int* dAcol = NULL;
     DATA_TYPE* dAval = NULL;
 
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAval, sizeof(DATA_TYPE) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAval, sizeof(DATA_TYPE) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
     CHECK_CUDA(hipMemcpy(dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAcol, coo_col_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAval, coo_values, nnz * sizeof(DATA_TYPE), hipMemcpyHostToDevice));
@@ -213,10 +213,10 @@ alpha_spsm() {
     int* dAcol = NULL;
     DATA_TYPE* dAval = NULL;
 
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAval, sizeof(DATA_TYPE) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAval, sizeof(DATA_TYPE) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
     CHECK_CUDA(hipMemcpy(dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAcol, coo_col_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAval, coo_values, nnz * sizeof(DATA_TYPE), hipMemcpyHostToDevice));
@@ -300,7 +300,7 @@ alpha_spsm() {
 
 int 
 main(int argc, const char* argv[]) {
-    args_help(argc, argv);
+    args_help_hip_hip(argc, argv);
     file = args_get_data_file(argc, argv);
     metrics_file = args_save_metrics_file(argc, argv);
     check_flag = args_get_if_check(argc, argv);

@@ -74,9 +74,9 @@ void qsort_csr_struct(ALPHA_INT *col_index, TYPE *values, const ALPHA_INT left, 
     qsort_csr_struct(col_index, values, med + 1, right);                                               
 }
 
-template <typename I, typename J, typename T, typename U>
-alphasparseStatus_t convert_csr_coo(const T *source, U **dest) {
-  U *mat = (U*)alpha_malloc(sizeof(U));
+template <typename I, typename J, typename T>
+alphasparseStatus_t convert_csr_coo(const T *source, T **dest) {
+  T *mat = (T*)alpha_malloc(sizeof(T));
   // alpha_timer_t timer;
   *dest = mat;
   I m = source->rows;

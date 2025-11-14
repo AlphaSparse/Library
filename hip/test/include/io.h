@@ -6,6 +6,7 @@
 
 #include "alphasparse/spdef.h"
 #include "alphasparse/spmat.h"
+#include <hip/hip_complex.h>
 
 #include <stdlib.h>
 #include <stdio.h>

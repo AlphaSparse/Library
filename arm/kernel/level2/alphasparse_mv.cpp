@@ -9,7 +9,11 @@
 #include "alphasparse/spapi.h"
 // #include "alphasparse/tuning.h"
 #include "alphasparse/util.h"
-#include "./mv/gemv/gemv_csr.hpp"
+#include "./mv/gemv/gemv.h"
+#include "./mv/hermv/hermv.h"
+#include "./mv/diagmv/diagmv.h"
+#include "./mv/symv/symv.h"
+#include "./mv/trmv/trmv.h"
 #include <cstdio>
 
 template <typename I = ALPHA_INT, typename J>
@@ -29,11 +33,6 @@ alphasparseStatus_t alphasparse_mv_template(
                (A->datatype_cpu == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX)||
                (A->datatype_cpu == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX)),
                ALPHA_SPARSE_STATUS_INVALID_VALUE);
-
-#ifndef COMPLEX
-  if (op_rq == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
-    return ALPHA_SPARSE_STATUS_INVALID_VALUE;
-#endif
   // TODO use simplelist to record optimized history
   // alphasparse_matrix_t compute_mat = NULL;
   struct alpha_matrix_descr compute_descr = dscr_rq;
@@ -43,14 +42,6 @@ alphasparseStatus_t alphasparse_mv_template(
       dscr_rq.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN)
     // check if it is a square matrix
     check_return(A->mat->rows != A->mat->cols, ALPHA_SPARSE_STATUS_INVALID_VALUE);
-  // alphasparse_inspector *inspector = (alphasparse_inspector *)A->inspector;
-  // if (inspector == NULL) {
-  //   fprintf(stderr, "inspector not initialized!!\n");
-  //   return ALPHA_SPARSE_STATUS_NOT_INITIALIZED;
-  // }
-  // alphasparse_inspector_mv *mv_inspector = inspector->mv_inspector;
-  // detect if set_mv_hint hasn't been invoked yet, ignore it
-
 
   void * mat = A->mat;
   if (A->format == ALPHA_SPARSE_FORMAT_CSR) { 
@@ -62,15 +53,1163 @@ alphasparseStatus_t alphasparse_mv_template(
       else
         return gemv_csr_conj(alpha, A->mat->rows, A->mat->cols, A->mat->row_data, A->mat->row_data + 1, A->mat->col_data,  (J*)(A->mat->val_data), x, beta, y);
     } else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_SYMMETRIC) {
-      return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csr_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csr_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csr_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csr_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csr_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csr_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csr_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csr_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
     } else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN) {
-      return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csr_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csr_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csr_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csr_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csr_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csr_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csr_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csr_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_TRIANGULAR) {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csr_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csr_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csr_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csr_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csr_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csr_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csr_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csr_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csr_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csr_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csr_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csr_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
     } else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_DIAGONAL) {
-      return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+      if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        return diagmv_csr_n<J>(alpha, A->mat, x, beta, y);
+      else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        return diagmv_csr_u<J>(alpha, A->mat, x, beta, y);
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
     } else {
       return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
     }
+  }
+  else if (A->format == ALPHA_SPARSE_FORMAT_COO) { 
+    if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_GENERAL) {
+      if (op_rq == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE) 
+        return gemv_coo(alpha, A->mat, x, beta, y);
+      else if(op_rq == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+        return gemv_coo_trans(alpha, A->mat, x, beta, y);
+      else
+        return gemv_coo_conj(alpha, A->mat, x, beta, y);
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_DIAGONAL) {
+      if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        return diagmv_coo_n<J>(alpha, A->mat, x, beta, y);
+      else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        return diagmv_coo_u<J>(alpha, A->mat, x, beta, y);
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_SYMMETRIC) {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_coo_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_coo_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_coo_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_coo_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_coo_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_coo_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_coo_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_coo_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_coo_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_coo_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_coo_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_coo_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_coo_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_coo_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_coo_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_coo_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_TRIANGULAR) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_coo_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_coo_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_coo_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_coo_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_coo_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_coo_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_coo_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_coo_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_coo_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_coo_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_coo_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_coo_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
   } 
+  else if (A->format == ALPHA_SPARSE_FORMAT_CSC) { 
+    if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_GENERAL) {
+      if (op_rq == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE) 
+        return gemv_csc(alpha, A->mat, x, beta, y);
+      else if(op_rq == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+        return gemv_csc_trans(alpha, A->mat, x, beta, y);
+      else
+        return gemv_csc_conj(alpha, A->mat, x, beta, y);
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_DIAGONAL) {
+      if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        return diagmv_csc_n<J>(alpha, A->mat, x, beta, y);
+      else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        return diagmv_csc_u<J>(alpha, A->mat, x, beta, y);
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_SYMMETRIC) {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csc_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csc_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csc_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csc_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csc_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csc_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_csc_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_csc_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csc_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csc_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csc_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csc_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csc_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csc_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_csc_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_csc_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_TRIANGULAR) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csc_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csc_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csc_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csc_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csc_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csc_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csc_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csc_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csc_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csc_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_csc_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_csc_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+  }
+  else if (A->format == ALPHA_SPARSE_FORMAT_BSR) { 
+    if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_GENERAL) {
+      if (op_rq == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE) 
+        return gemv_bsr(alpha, A->mat, x, beta, y);
+      else if(op_rq == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+        return gemv_bsr_trans(alpha, A->mat, x, beta, y);
+      else
+        return gemv_bsr_conj(alpha, A->mat, x, beta, y);
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_DIAGONAL) {
+      if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        return diagmv_bsr_n<J>(alpha, A->mat, x, beta, y);
+      else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        return diagmv_bsr_u<J>(alpha, A->mat, x, beta, y);
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_SYMMETRIC) {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_bsr_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_bsr_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_bsr_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_bsr_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_bsr_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_bsr_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_bsr_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_bsr_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_bsr_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_bsr_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_bsr_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_bsr_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_bsr_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_bsr_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_bsr_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_bsr_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_TRIANGULAR) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_bsr_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_bsr_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_bsr_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_bsr_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_bsr_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_bsr_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_bsr_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_bsr_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_bsr_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_bsr_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_bsr_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_bsr_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+  }
+  else if (A->format == ALPHA_SPARSE_FORMAT_DIA) { 
+    if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_GENERAL) {
+      if (op_rq == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE) 
+        return gemv_dia(alpha, A->mat, x, beta, y);
+      else if(op_rq == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+        return gemv_dia_trans(alpha, A->mat, x, beta, y);
+      else
+        return gemv_dia_conj(alpha, A->mat, x, beta, y);
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_DIAGONAL) {
+      if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        return diagmv_dia_n<J>(alpha, A->mat, x, beta, y);
+      else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        return diagmv_dia_u<J>(alpha, A->mat, x, beta, y);
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_SYMMETRIC) {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_dia_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_dia_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_dia_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_dia_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_dia_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_dia_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_dia_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_dia_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_dia_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_dia_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_dia_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_dia_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_dia_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_dia_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_dia_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_dia_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_TRIANGULAR) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_dia_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_dia_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_dia_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_dia_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_dia_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_dia_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_dia_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_dia_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_dia_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_dia_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_dia_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_dia_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+  }
+  else if (A->format == ALPHA_SPARSE_FORMAT_ELL) { 
+    if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_GENERAL) {
+      if (op_rq == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE) 
+        return gemv_ell(alpha, A->mat, x, beta, y);
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+  }
+  else if (A->format == ALPHA_SPARSE_FORMAT_SKY) { 
+    if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_DIAGONAL) {
+      if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        return diagmv_sky_n<J>(alpha, A->mat, x, beta, y);
+      else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        return diagmv_sky_u<J>(alpha, A->mat, x, beta, y);
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_SYMMETRIC) {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_sky_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_sky_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_sky_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_sky_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_sky_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_sky_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return symv_sky_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return symv_sky_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_sky_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_sky_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_sky_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_sky_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_sky_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_sky_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return hermv_sky_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return hermv_sky_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_TRIANGULAR) 
+    {
+      if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_sky_n_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_sky_n_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_sky_u_lo<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_sky_u_hi<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_sky_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_sky_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_sky_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_sky_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+      {
+          if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_sky_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_sky_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+          {
+            if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                return trmv_sky_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                return trmv_sky_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+          }
+          else
+              return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+      }
+      else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    else
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+  }
   else {
     fprintf(stderr, "format not supported\n");
     return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;

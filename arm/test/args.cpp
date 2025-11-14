@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// #ifndef __MKL__
+// #define __MKL__
+// #endif  
+
 char *stort_options = "";
 struct option long_options[] = {
     {"help", no_argument, NULL, 1},

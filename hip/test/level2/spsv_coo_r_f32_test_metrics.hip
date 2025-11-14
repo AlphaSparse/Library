@@ -12,7 +12,7 @@
 #include "../../format/alphasparse_create_coo.h"
 #include "../../format/coo2csr.h"
 #include "../../format/coo_order.h"
-#include "../include/gputimer.h"
+
 #include "../include/spsv/mat_adjust.h"
 #include "../include/common.h"
 #include "alphasparse.h"
@@ -91,9 +91,9 @@ cuda_spsv()
     int *dAcol = NULL;
     DATA_TYPE *dAval = NULL;
 
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
     CHECK_CUDA(hipMemcpy(dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAcol, coo_col_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAval, coo_values, nnz * sizeof(DATA_TYPE), hipMemcpyHostToDevice));
@@ -183,8 +183,7 @@ cuda_spsv()
                              vecY,
                              cuda_datatype,
                              cuda_alg,
-                             spsvDescr,
-                             dBuffer));
+                             spsvDescr));
         // hipDeviceSynchronize();
         GPU_TIMER_END(time_solve, event_start, event_stop);
         // printf("%.4lf\n", time_solve);
@@ -194,9 +193,6 @@ cuda_spsv()
         }
     }
     cuda_time_solve_avg = get_avg_time_2(times_solve);
-    // cuda_bandwidth = static_cast<double>(sizeof(float)) * (2 * m + nnz) +
-    //                  sizeof(int) * (m + 1 + nnz) / cuda_time_solve_avg / 1e6;
-    // cuda_gflops = static_cast<double>(2 * nnz) / cuda_time_solve_avg / 1e6;
 
     CHECK_CUDA(hipMemcpy(cuda_y, dY, sizeof(DATA_TYPE) * m, hipMemcpyDeviceToHost));
 
@@ -229,9 +225,9 @@ alpha_spsv()
     int *dAcol = NULL;
     DATA_TYPE *dAval = NULL;
 
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
-    PRINT_IF_CUDA_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dArow, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAcol, sizeof(int) * nnz));
+    PRINT_IF_HIP_ERROR(hipMalloc((void **)&dAval, sizeof(DATA_TYPE) * nnz));
 
     CHECK_CUDA(hipMemcpy(dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
     CHECK_CUDA(hipMemcpy(dAcol, coo_col_index, nnz * sizeof(int), hipMemcpyHostToDevice));
@@ -351,7 +347,7 @@ alpha_spsv()
 int main(int argc, const char *argv[])
 {
     // args
-    args_help(argc, argv);
+    args_help_hip(argc, argv);
     file = args_get_data_file(argc, argv);
     metrics_file = args_save_metrics_file(argc, argv);
     check_flag = args_get_if_check(argc, argv);
@@ -387,10 +383,10 @@ int main(int argc, const char *argv[])
         // printf("%s - the row number and the column number are NOT equal!\n", file);
         return 0;
     }
-    if (nnz < 1e+6)
-    {
-        return 0;
-    }
+    // if (nnz < 1e+6)
+    // {
+    //     return 0;
+    // }
 
     coo_order<int32_t, DATA_TYPE>(nnz, coo_row_index, coo_col_index, coo_values);
 

@@ -212,10 +212,10 @@ ALPHA_INT alpha_range_search(ALPHA_INT a[], ALPHA_INT start, ALPHA_INT end, ALPH
     return -1;
 }
 
-// void csr_s_col_partition(const spmat_csr_s_t *mat, ALPHA_INT rs, ALPHA_INT re, ALPHA_INT block_size, ALPHA_INT **pos_p, ALPHA_INT *block_num_p, ALPHA_INT *ldp_p)
-// {
-//     block_partition(&mat->rows_start[rs], &mat->rows_end[rs], mat->col_indx, mat->cols, re - rs, block_size, pos_p, block_num_p, ldp_p);
-// }
+void csr_col_partition(const internal_spmat mat, ALPHA_INT rs, ALPHA_INT re, ALPHA_INT block_size, ALPHA_INT **pos_p, ALPHA_INT *block_num_p, ALPHA_INT *ldp_p)
+{
+    block_partition(&mat->row_data[rs], &mat->row_data[rs+1], mat->col_data, mat->cols, re - rs, block_size, pos_p, block_num_p, ldp_p);
+}
 // void csr_d_col_partition(const spmat_csr_d_t *mat, ALPHA_INT rs, ALPHA_INT re, ALPHA_INT block_size, ALPHA_INT **pos_p, ALPHA_INT *block_num_p, ALPHA_INT *ldp_p)
 // {
 //     block_partition(&mat->rows_start[rs], &mat->rows_end[rs], mat->col_indx, mat->cols, re - rs, block_size, pos_p, block_num_p, ldp_p);
@@ -261,16 +261,16 @@ static inline void csr_uppercol_trunc(const ALPHA_INT rows, ALPHA_INT cs, ALPHA_
     {
         ALPHA_INT dr = r - rs;
         ALPHA_INT sr = old_start[r];
-        ALPHA_INT er = old_end[r];
+        ALPHA_INT er = old_end[r+1];
         ALPHA_INT target_cs = alpha_max(cs, r);
         new_start[dr] = alpha_lower_bound(&col_indx[sr], &col_indx[er], target_cs) - col_indx;
         new_end[dr] = alpha_upper_bound(&col_indx[sr], &col_indx[er], ce) - col_indx;
     }
 }
-// void csr_s_uppercol_truncate(const spmat_csr_s_t *A, ALPHA_INT cs, ALPHA_INT ce, ALPHA_INT *new_start, ALPHA_INT *new_end)
-// {
-//     csr_uppercol_trunc(A->rows, cs, ce, A->rows_start, A->rows_end, A->col_indx, new_start, new_end);
-// }
+void csr_uppercol_truncate(const internal_spmat A, ALPHA_INT cs, ALPHA_INT ce, ALPHA_INT *new_start, ALPHA_INT *new_end)
+{
+    csr_uppercol_trunc(A->rows, cs, ce, A->row_data, A->row_data, A->col_data, new_start, new_end);
+}
 // void csr_d_uppercol_truncate(const spmat_csr_d_t *A, ALPHA_INT cs, ALPHA_INT ce, ALPHA_INT *new_start, ALPHA_INT *new_end)
 // {
 //     csr_uppercol_trunc(A->rows, cs, ce, A->rows_start, A->rows_end, A->col_indx, new_start, new_end);
@@ -299,16 +299,16 @@ static inline void csr_lowercol_trunc(const ALPHA_INT rows, ALPHA_INT cs, ALPHA_
     {
         ALPHA_INT dr = r - rs;
         ALPHA_INT sr = old_start[r];
-        ALPHA_INT er = old_end[r];
+        ALPHA_INT er = old_end[r+1];
         ALPHA_INT target_ce = alpha_min(ce, r);
         new_start[dr] = alpha_lower_bound(&col_indx[sr], &col_indx[er], cs) - col_indx;
         new_end[dr] = alpha_upper_bound(&col_indx[sr], &col_indx[er], target_ce) - col_indx;
     }
 }
-// void csr_s_lowercol_truncate(const spmat_csr_s_t *A, ALPHA_INT cs, ALPHA_INT ce, ALPHA_INT *new_start, ALPHA_INT *new_end)
-// {
-//     csr_lowercol_trunc(A->rows, cs, ce, A->rows_start, A->rows_end, A->col_indx, new_start, new_end);
-// }
+void csr_lowercol_truncate(const internal_spmat A, ALPHA_INT cs, ALPHA_INT ce, ALPHA_INT *new_start, ALPHA_INT *new_end)
+{
+    csr_lowercol_trunc(A->rows, cs, ce, A->row_data, A->row_data, A->col_data, new_start, new_end);
+}
 // void csr_d_lowercol_truncate(const spmat_csr_d_t *A, ALPHA_INT cs, ALPHA_INT ce, ALPHA_INT *new_start, ALPHA_INT *new_end)
 // {
 //     csr_lowercol_trunc(A->rows, cs, ce, A->rows_start, A->rows_end, A->col_indx, new_start, new_end);

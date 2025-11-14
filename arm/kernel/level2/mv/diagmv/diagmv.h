@@ -1,0 +1,13 @@
+#include "diagmv_csr_n.hpp"
+#include "diagmv_csr_u.hpp"
+#include "diagmv_bsr_n.hpp"
+#include "diagmv_bsr_u.hpp"
+#include "diagmv_csc_n.hpp"
+#include "diagmv_csc_u.hpp"
+#include "diagmv_coo_n.hpp"
+#include "diagmv_coo_u.hpp"
+#include "diagmv_dia_n.hpp"
+#include "diagmv_dia_u.hpp"
+#include "diagmv_sky_n.hpp"
+#include "diagmv_sky_u.hpp"
+

@@ -33,7 +33,7 @@ __device__ static T lower_bound_int(const T *t, int r, int64_t target, int64_t n
 }
 
 template <typename T, T warp_size>
-__global__ static void balanced_partition_row_by_nnz(const T *acc_sum_arr, T rows, T nwarps, T *partition, int64_t ave)
+__launch_bounds__(512) __global__ static void balanced_partition_row_by_nnz(const T *acc_sum_arr, T rows, T nwarps, T *partition, int64_t ave)
 {
     const T gid = blockIdx.x * blockDim.x + threadIdx.x;
     if (gid >= nwarps)
@@ -42,7 +42,7 @@ __global__ static void balanced_partition_row_by_nnz(const T *acc_sum_arr, T row
 }
 
 template <typename T, typename W, typename V, T warp_size>
-__global__ static void balanced_partition_row_by_nnz_and_scale_y(
+__launch_bounds__(512) __global__ static void balanced_partition_row_by_nnz_and_scale_y(
     const T *acc_sum_arr,
     T rows,
     T nwarps,
@@ -317,7 +317,7 @@ __device__ __forceinline__ void load_balance_spmv_kernel(
 }
 
 template <typename T, typename U, typename V, typename W>
-__global__ __launch_bounds__(spmv_block_size) void abstract_load_balance_spmv(
+__launch_bounds__(512) __global__ __launch_bounds__(spmv_block_size) void abstract_load_balance_spmv(
     T nwarps, const T m, const T nnz,
     const U *val, const T *col_idxs,
     const T *csr_row_ptr, T *srow,

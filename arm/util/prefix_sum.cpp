@@ -14,15 +14,10 @@ static void vector_add(int* inout, int increment, size_t len) {
   int32x4_t v0, v1, v2, v3;
   int32x4_t v_inc = vdupq_n_s32(increment);
   for (; i + 15 < len; i += 16) {
-    // v0 = vld1q_s32((void*)(inout + i));
-    // v1 = vld1q_s32((void*)(inout + i + 4));
-    // v2 = vld1q_s32((void*)(inout + i + 8));
-    // v3 = vld1q_s32((void*)(inout + i + 12));
     v0 = vld1q_s32((inout + i));
     v1 = vld1q_s32((inout + i + 4));
     v2 = vld1q_s32((inout + i + 8));
     v3 = vld1q_s32((inout + i + 12));
-
 
     v0 = vaddq_s32(v_inc, v0);
     v1 = vaddq_s32(v_inc, v1);

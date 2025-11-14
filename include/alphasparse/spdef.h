@@ -219,6 +219,7 @@ struct _internal_spmat
   ALPHA_INT* ind_data{};
   ALPHA_INT* dis_data{};
   ALPHA_INT* pointers{};
+  ALPHA_INT* reoeders{};
   void* val_data{};
 
   const int* const_row_data{};
@@ -236,6 +237,11 @@ struct _internal_spmat
   
   int64_t ell_cols{};
   int64_t ell_width{};
+
+  int64_t sell_C{};
+  int64_t sell_sigma{};
+  int64_t sell_blocks{};
+  int64_t sell_nnz{};
 
   int64_t batch_count{};
   int64_t batch_stride{};
@@ -355,11 +361,19 @@ typedef enum {
   ALPHA_SPARSE_SPMV_ALG_FLAT = 15,
   ALPHA_SPARSE_SPMV_ALG_LINE_ENHANCE = 16,
   ALPHA_SPARSE_SPMV_ALG_LOAD_BALANCE = 17,
+  ALPHA_SPARSE_SPMV_ALG_PFLAT = 18,
 } alphasparseSpMVAlg_t;
 
 typedef enum {
   ALPHA_SPARSE_SPSV_ALG_DEFAULT = 0, /**< Default SpSV algorithm for the given format. */
-  ALPHA_SPARSE_SPSV_ALG_CSR_CW = 1,
+  ALPHA_SPARSE_SPSV_CSR_ALG1 = 1,
+  ALPHA_SPARSE_SPSV_CSR_ALG2 = 2,
+  ALPHA_SPARSE_SPSV_CSR_ALG3 = 3,
+  ALPHA_SPARSE_SPSV_CSR_ALG4 = 4,
+  ALPHA_SPARSE_SPSV_CSR_ALG5 = 5,
+  ALPHA_SPARSE_SPSV_CSR_ALG6 = 6,
+  ALPHA_SPARSE_SPSV_CSR_ALG7 = 7,
+  ALPHA_SPARSE_SPSV_CSR_ALG8 = 8,
 } alphasparseSpSVAlg_t;
 
 typedef enum {
@@ -384,6 +398,7 @@ typedef enum {
   ALPHASPARSE_SPMM_CSR_ALG3 = 7,
   ALPHASPARSE_SPMM_CSR_ALG4 = 8,
   ALPHASPARSE_SPMM_CSR_ALG5 = 9,
+  ALPHASPARSE_SPMM_CSR_ALG6 = 10,
 } alphasparseSpMMAlg_t;
 
 typedef enum {

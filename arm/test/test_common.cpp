@@ -2,6 +2,9 @@
 
 #include "alphasparse.h"
 
+// #ifndef __MKL__
+// #define __MKL__
+// #endif  
 void parse_args_and_initialize(int argc, const char *argv[],
                                alpha_common_args_t *common_arg) {
   common_arg->transA = alpha_args_get_transA(argc, argv);
@@ -140,6 +143,7 @@ void alpha_create_coo_wapper(matrix_data_t *matrix_data,
 
 void alpha_convert_matrix_wapper(alphasparseFormat_t fmt,
                                  struct alpha_matrix_descr descr,
+                                 alphasparse_layout_t layout,
                                  alphasparse_matrix_t input,
                                  alphasparse_matrix_t *output,
                                  int para_int1, int para_int2) {
@@ -152,8 +156,8 @@ void alpha_convert_matrix_wapper(alphasparseFormat_t fmt,
                         input, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_csc");
   } else if (fmt == ALPHA_SPARSE_FORMAT_BSR) {
-    alpha_call_exit(alphasparse_convert_hints_bsr(
-                        input, para_int1, ALPHA_SPARSE_LAYOUT_ROW_MAJOR,
+    alpha_call_exit(alphasparse_convert_bsr(
+                        input, para_int1, layout,
                         ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_bsr");
   } else if (fmt == ALPHA_SPARSE_FORMAT_SKY) {
@@ -166,7 +170,7 @@ void alpha_convert_matrix_wapper(alphasparseFormat_t fmt,
                         input, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_dia");
   } else if (fmt == ALPHA_SPARSE_FORMAT_ELL) {
-    alpha_call_exit(alphasparse_convert_hints_ell(
+    alpha_call_exit(alphasparse_convert_ell(
                         input, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_ell");
   // } else if (fmt == ALPHA_SPARSE_FORMAT_GEBSR) {
@@ -280,7 +284,7 @@ void mkl_create_coo_wapper(matrix_data_t *matrix_data,
 }
 
 void mkl_convert_matrix_wapper(alphasparseFormat_t fmt,
-                               struct matrix_descr descr, sparse_matrix_t input,
+                               struct matrix_descr descr, sparse_layout_t layout, sparse_matrix_t input,
                                sparse_matrix_t *output, int row_block,
                                int col_block) {
   if (fmt == ALPHA_SPARSE_FORMAT_CSR) {
@@ -288,11 +292,14 @@ void mkl_convert_matrix_wapper(alphasparseFormat_t fmt,
         mkl_sparse_convert_csr(input, SPARSE_OPERATION_NON_TRANSPOSE, output),
         "mkl_sparse_convert_csr");
   } else if (fmt == ALPHA_SPARSE_FORMAT_CSC) {
-    fprintf(stderr, "fmt not supported!\n");
-    exit(-1);
+    mkl_call_exit(
+      mkl_sparse_convert_csr(input, SPARSE_OPERATION_TRANSPOSE, output),
+      "mkl_sparse_convert_csc");
+    // fprintf(stderr, "fmt not supported!\n");
+    // exit(-1);
   } else if (fmt == ALPHA_SPARSE_FORMAT_BSR) {
     mkl_call_exit(
-        mkl_sparse_convert_bsr(input, row_block, SPARSE_LAYOUT_ROW_MAJOR,
+        mkl_sparse_convert_bsr(input, row_block, layout,
                                SPARSE_OPERATION_NON_TRANSPOSE, output),
         "mkl_sparse_convert_bsr");
   } else {

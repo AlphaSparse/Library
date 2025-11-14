@@ -559,3 +559,38 @@ bool has_coo_zero_diag(
   }
   return !(row == m);
 }
+
+
+template <typename T, typename U>
+void mat_get_triangular_part(
+    T **coo_row_idx,
+    T **coo_col_idx,
+    U **coo_val,
+    T m,
+    T n,
+    T &nnz,
+    alphasparse_fill_mode_t fillmode)
+{
+    assert(m == n);
+    int k = 0;
+    if (fillmode == ALPHA_SPARSE_FILL_MODE_LOWER) {
+        for (int i = 0; i < nnz; i++) {
+            if ((*coo_row_idx)[i] >= (*coo_col_idx)[i]) {
+                (*coo_row_idx)[k] = (*coo_row_idx)[i];
+                (*coo_col_idx)[k] = (*coo_col_idx)[i];
+                (*coo_val)[k] = (*coo_val)[i];
+                k++;
+            }
+        }
+    } else if (fillmode == ALPHA_SPARSE_FILL_MODE_UPPER) {
+        for (int i = 0; i < nnz; i++) {
+            if ((*coo_row_idx)[i] <= (*coo_col_idx)[i]) {
+                (*coo_row_idx)[k] = (*coo_row_idx)[i];
+                (*coo_col_idx)[k] = (*coo_col_idx)[i];
+                (*coo_val)[k] = (*coo_val)[i];
+                k++;
+            }
+        }
+    }
+    nnz = k;
+}

@@ -51,6 +51,11 @@ make_value(float z)
 #endif
 
 #ifdef __HIP__
+
+#define CHECK_CUSPARSE(func)                                         \
+  {                                                              \
+  }
+  
 template <typename T>
 __device__ __host__ __forceinline__ T
 make_value(float z)
@@ -66,24 +71,24 @@ make_value(float z)
 }
 #endif
 
-// __device__ __forceinline__ int32_t alpha_mul24(int32_t x, int32_t y)
-// {
-//   return ((x << 8) >> 8) * ((y << 8) >> 8);
-// }
-// __device__ __forceinline__ int64_t alpha_mul24(int64_t x, int64_t y)
-// {
-//   return ((x << 40) >> 40) * ((y << 40) >> 40);
-// }
-// __device__ __forceinline__ int32_t alpha_mad24(int32_t x, int32_t y, int32_t z)
-// {
-//   return alpha_mul24(x, y) + z;
-// }
-// __device__ __forceinline__ int64_t alpha_mad24(int64_t x, int64_t y, int64_t z)
-// {
-//   return alpha_mul24(x, y) + z;
-// }
-
 #if defined(__CUDA__) || defined(__DCU__) || defined(__HIP__)
+__device__ __forceinline__ int32_t alpha_mul24(int32_t x, int32_t y)
+{
+  return ((x << 8) >> 8) * ((y << 8) >> 8);
+}
+__device__ __forceinline__ int64_t alpha_mul24(int64_t x, int64_t y)
+{
+  return ((x << 40) >> 40) * ((y << 40) >> 40);
+}
+__device__ __forceinline__ int32_t alpha_mad24(int32_t x, int32_t y, int32_t z)
+{
+  return alpha_mul24(x, y) + z;
+}
+__device__ __forceinline__ int64_t alpha_mad24(int64_t x, int64_t y, int64_t z)
+{
+  return alpha_mul24(x, y) + z;
+}
+
 template <typename T, typename U>
 static inline __device__ U sum2_reduce(U cur_sum, U *partial, int lid, T max_size, int reduc_size)
 {
@@ -544,49 +549,6 @@ __device__ __forceinline__ hipDoubleComplex wfreduce_min(hipDoubleComplex min_)
   return res;
 }
 
-#define GPU_TIMER_START(elapsed_time, event_start, event_stop) \
-  do                                                           \
-  {                                                            \
-    elapsed_time = 0.0;                                        \
-    hipEventCreate(&event_start);                             \
-    hipEventCreate(&event_stop);                              \
-    hipEventRecord(event_start);                              \
-  } while (0)
-
-#define GPU_TIMER_END(elapsed_time, event_start, event_stop)      \
-  do                                                              \
-  {                                                               \
-    hipEventRecord(event_stop);                                  \
-    hipEventSynchronize(event_stop);                             \
-    hipEventElapsedTime(&elapsed_time, event_start, event_stop); \
-  } while (0)
-
-#define CHECK_CUDA(func)                                         \
-  {                                                              \
-    hipError_t status = (func);                                 \
-    if (status != hipSuccess)                                   \
-    {                                                            \
-      printf("CUDA API failed at line %d with error: %s (%d)\n", \
-             __LINE__,                                           \
-             hipGetErrorString(status),                         \
-             status);                                            \
-      exit(-1);                                                  \
-    }                                                            \
-  }
-
-// #define (func)                                         \
-//   {                                                                  \
-//     hipsparseStatus_t status = (func);                                \
-//     if (status != HIPSPARSE_STATUS_SUCCESS)                           \
-//     {                                                                \
-//       printf("CUSPARSE API failed at line %d with error: %s (%d)\n", \
-//              __LINE__,                                               \
-//              hipGetErrorString(status),                         \
-//              status);                                                \
-//       exit(-1);                                                      \
-//     }                                                                \
-//   }
-
 using cooperative_groups::this_thread_block;
 using cooperative_groups::thread_block_tile;
 
@@ -674,4 +636,80 @@ __host__ __device__ __forceinline__ T ceildivT(const T nom, const T denom)
       exit(-1);                                                  \
     }                                                            \
   }
-  #endif
+
+__device__ __forceinline__ float
+alphasparse_fma(float p,
+                float q,
+                float r)
+{
+    return fma(p, q, r);
+}
+
+__device__ __forceinline__ double
+alphasparse_fma(double p,
+                double q,
+                double r)
+{
+    return fma(p, q, r);
+}
+
+__device__ __forceinline__ hipFloatComplex
+alphasparse_fma(hipFloatComplex p,
+                hipFloatComplex q,
+                hipFloatComplex r)
+{
+    return {};
+}
+
+__device__ __forceinline__ hipDoubleComplex
+alphasparse_fma(hipDoubleComplex p,
+                hipDoubleComplex q,
+                hipDoubleComplex r)
+{
+    return {};
+}
+
+
+
+
+template <unsigned int WFSIZE>
+__device__ __forceinline__ void alphasparse_wfreduce_sum(int *sum)
+{
+    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
+    {
+        *sum += __shfl_xor(*sum, i);
+    }
+}
+
+template <unsigned int WFSIZE>
+__device__ __forceinline__ void alphasparse_wfreduce_sum(int64_t *sum)
+{
+    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
+    {
+        *sum += __shfl_xor(*sum, i);
+    }
+}
+
+template <unsigned int WFSIZE>
+__device__ __forceinline__ float alphasparse_wfreduce_sum(float sum)
+{
+    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
+    {
+        sum += __shfl_xor(sum, i);
+    }
+
+    return sum;
+}
+
+template <unsigned int WFSIZE>
+__device__ __forceinline__ double alphasparse_wfreduce_sum(double sum)
+{
+    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
+    {
+        sum += __shfl_xor(sum, i);
+    }
+
+    return sum;
+}
+
+#endif

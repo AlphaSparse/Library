@@ -17,7 +17,7 @@ __global__ void
 init_kernel(){};
 
 alphasparseStatus_t
-get_alphasparse_status_for_cuda_status(hipError_t status)
+get_alphasparse_status_for_hip_status(hipError_t status)
 {
   switch (status) {
     // success
@@ -53,17 +53,15 @@ get_alphasparse_status_for_cuda_status(hipError_t status)
 alphasparseStatus_t
 initHandle(alphasparseHandle_t* handle)
 {
-  *handle = (alphasparseHandle_t)alpha_malloc(sizeof(alphasparse_handle));
-  (*handle)->stream = 0;
-  for (int i = 0; i < 6; i++) {
-      hipStreamCreate(&(*handle)->streams[i]);
-  }
-  (*handle)->pointer_mode = ALPHA_SPARSE_POINTER_MODE_HOST;
+    *handle = new alphasparse_handle;
+    (*handle)->stream = 0;
+    for (int i = 0; i < 6; i++) {
+        hipStreamCreate(&(*handle)->streams[i]);
+    }
+    (*handle)->pointer_mode = ALPHA_SPARSE_POINTER_MODE_HOST;
+    (*handle)->check_flag = false;
 
-  (*handle)->check_flag = false;
-  (*handle)->process = nullptr;
-
-  return ALPHA_SPARSE_STATUS_SUCCESS;
+    return ALPHA_SPARSE_STATUS_SUCCESS;
 }
 
 alphasparseStatus_t
@@ -72,8 +70,8 @@ alphasparseGetHandle(alphasparseHandle_t* handle)
   // Default device is active device
   if ((*handle) == nullptr)
     initHandle(handle);
-  THROW_IF_CUDA_ERROR(hipGetDevice(&(*handle)->device));
-  THROW_IF_CUDA_ERROR(
+  THROW_IF_HIP_ERROR(hipGetDevice(&(*handle)->device));
+  THROW_IF_HIP_ERROR(
     hipGetDeviceProperties(&(*handle)->properties, (*handle)->device));
   // Device wavefront size
   (*handle)->wavefront_size = (*handle)->properties.warpSize;
@@ -104,36 +102,36 @@ alphasparseGetHandle(alphasparseHandle_t* handle)
   // Allocate device buffer
   (*handle)->buffer_size =
     (coomv_size > 1024 * 1024) ? coomv_size : 1024 * 1024;
-  THROW_IF_CUDA_ERROR(
+  THROW_IF_HIP_ERROR(
     hipMalloc((void**)&(*handle)->buffer, (*handle)->buffer_size));
   // Device one
-  THROW_IF_CUDA_ERROR(hipMalloc((void**)&((*handle)->sone), sizeof(float)));
-  THROW_IF_CUDA_ERROR(hipMalloc((void**)&((*handle)->done), sizeof(double)));
+  THROW_IF_HIP_ERROR(hipMalloc((void**)&((*handle)->sone), sizeof(float)));
+  THROW_IF_HIP_ERROR(hipMalloc((void**)&((*handle)->done), sizeof(double)));
 
   // Execute empty kernel for initialization
   init_kernel<<<dim3(1), dim3(1), 0, (*handle)->stream>>>();
   // Execute memset for initialization
-  THROW_IF_CUDA_ERROR(
+  THROW_IF_HIP_ERROR(
     hipMemsetAsync((*handle)->sone, 0, sizeof(float), (*handle)->stream));
-  THROW_IF_CUDA_ERROR(
+  THROW_IF_HIP_ERROR(
     hipMemsetAsync((*handle)->done, 0, sizeof(double), (*handle)->stream));
 
   float hsone = 1.0f;
   double hdone = 1.0;
 
-  THROW_IF_CUDA_ERROR(hipMemcpyAsync((*handle)->sone,
+  THROW_IF_HIP_ERROR(hipMemcpyAsync((*handle)->sone,
                                       &hsone,
                                       sizeof(float),
                                       hipMemcpyHostToDevice,
                                       (*handle)->stream));
-  THROW_IF_CUDA_ERROR(hipMemcpyAsync((*handle)->done,
+  THROW_IF_HIP_ERROR(hipMemcpyAsync((*handle)->done,
                                       &hdone,
                                       sizeof(double),
                                       hipMemcpyHostToDevice,
                                       (*handle)->stream));
 
   // Wait for device transfer to finish
-  THROW_IF_CUDA_ERROR(hipStreamSynchronize((*handle)->stream));
+  THROW_IF_HIP_ERROR(hipStreamSynchronize((*handle)->stream));
   return ALPHA_SPARSE_STATUS_SUCCESS;
 }
 
@@ -143,9 +141,9 @@ alphasparseGetHandle(alphasparseHandle_t* handle)
 alphasparseStatus_t
 alphasparse_destory_handle(alphasparseHandle_t handle)
 {
-  PRINT_IF_CUDA_ERROR(hipFree(handle->buffer));
-  PRINT_IF_CUDA_ERROR(hipFree(handle->sone));
-  PRINT_IF_CUDA_ERROR(hipFree(handle->done));
+  THROW_IF_HIP_ERROR(hipFree(handle->buffer));
+  THROW_IF_HIP_ERROR(hipFree(handle->sone));
+  THROW_IF_HIP_ERROR(hipFree(handle->done));
 
   for (int i = 0; i < 6; i++) {
       hipStreamDestroy(handle->streams[i]);
@@ -208,39 +206,39 @@ alphasparse_destroy_csrmv_info(alphasparse_csrmv_info_t info)
   }
   // Clean up row blocks
   if (info->size > 0) {
-    THROW_IF_CUDA_ERROR(hipFree(info->row_blocks));
+    THROW_IF_HIP_ERROR(hipFree(info->row_blocks));
   }
 
   if (info->partition) {
-    THROW_IF_CUDA_ERROR(hipFree(info->partition));
+    THROW_IF_HIP_ERROR(hipFree(info->partition));
   }
 
   if (info->coordinate) {
-    THROW_IF_CUDA_ERROR(hipFree(info->partition));
+    THROW_IF_HIP_ERROR(hipFree(info->partition));
   }
 
   if (info->reduc_row) {
-    THROW_IF_CUDA_ERROR(hipFree(info->reduc_row));
+    THROW_IF_HIP_ERROR(hipFree(info->reduc_row));
   }
 
   if (info->reduc_val) {
-    THROW_IF_CUDA_ERROR(hipFree(info->reduc_val));
+    THROW_IF_HIP_ERROR(hipFree(info->reduc_val));
   }
 
   if (info->r_csr_row_ptr) {
-    THROW_IF_CUDA_ERROR(hipFree(info->r_csr_row_ptr));
+    THROW_IF_HIP_ERROR(hipFree(info->r_csr_row_ptr));
   }
 
   if (info->r_csr_col_ind) {
-    THROW_IF_CUDA_ERROR(hipFree(info->r_csr_col_ind));
+    THROW_IF_HIP_ERROR(hipFree(info->r_csr_col_ind));
   }
 
   if (info->r_row_indx) {
-    THROW_IF_CUDA_ERROR(hipFree(info->r_row_indx));
+    THROW_IF_HIP_ERROR(hipFree(info->r_row_indx));
   }
 
   if (info->r_csr_val) {
-    THROW_IF_CUDA_ERROR(hipFree(info->r_csr_val));
+    THROW_IF_HIP_ERROR(hipFree(info->r_csr_val));
   }
 
   // Destruct
@@ -261,28 +259,28 @@ alphasparse_destroy_trm_info(alphasparse_trm_info_t info)
 
   // Clean up
   if (info->row_map != nullptr) {
-    THROW_IF_CUDA_ERROR(hipFree(info->row_map));
+    THROW_IF_HIP_ERROR(hipFree(info->row_map));
     info->row_map = nullptr;
   }
 
   if (info->trm_diag_ind != nullptr) {
-    THROW_IF_CUDA_ERROR(hipFree(info->trm_diag_ind));
+    THROW_IF_HIP_ERROR(hipFree(info->trm_diag_ind));
     info->trm_diag_ind = nullptr;
   }
 
   // Clear trmt arrays
   if (info->trmt_perm != nullptr) {
-    THROW_IF_CUDA_ERROR(hipFree(info->trmt_perm));
+    THROW_IF_HIP_ERROR(hipFree(info->trmt_perm));
     info->trmt_perm = nullptr;
   }
 
   if (info->trmt_row_ptr != nullptr) {
-    THROW_IF_CUDA_ERROR(hipFree(info->trmt_row_ptr));
+    THROW_IF_HIP_ERROR(hipFree(info->trmt_row_ptr));
     info->trmt_row_ptr = nullptr;
   }
 
   if (info->trmt_col_ind != nullptr) {
-    THROW_IF_CUDA_ERROR(hipFree(info->trmt_col_ind));
+    THROW_IF_HIP_ERROR(hipFree(info->trmt_col_ind));
     info->trmt_col_ind = nullptr;
   }
 
@@ -515,7 +513,7 @@ alphasparse_destroy_mat_info(alphasparse_mat_info_t info)
 
   // Clear zero pivot
   if (info->zero_pivot != nullptr) {
-    THROW_IF_CUDA_ERROR(hipFree(info->zero_pivot));
+    THROW_IF_HIP_ERROR(hipFree(info->zero_pivot));
     info->zero_pivot = nullptr;
   }
 

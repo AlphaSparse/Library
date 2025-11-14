@@ -6916,6 +6916,15 @@ alphasparseSpMV_bufferSize(alphasparseHandle_t handle,
                            alphasparseSpMVAlg_t alg,
                            size_t* bufferSize);
 
+alphasparseStatus_t
+alphasparseSpMV_analysis(alphasparseHandle_t handle,
+                        alphasparseOperation_t opA,
+                        alphasparseSpMatDescr_t matA,
+                        alphasparseSpMVAlg_t alg);
+
+alphasparseStatus_t
+alphasparseSpMV_clear(alphasparseHandle_t handle, alphasparseSpMVAlg_t alg);
+
 // alphasparseStatus_t
 // alphasparseSpSV_solve(alphasparseHandle_t handle,
 //                       alphasparseOperation_t opA,
@@ -6991,6 +7000,19 @@ alphasparseSpGEMMreuse_compute(alphasparseHandle_t handle,
                                alphasparseDataType computeType,
                                alphasparseSpGEMMAlg_t alg,
                                alphasparseSpGEMMDescr_t spgemmDescr);
+
+alphasparseStatus_t
+alphasparseSpMM_preprocess(alphasparseHandle_t handle,
+                           alphasparseOperation_t opA,
+                           alphasparseOperation_t opB,
+                           const void* alpha,
+                           alphasparseSpMatDescr_t matA,
+                           alphasparseDnMatDescr_t matB,
+                           const void* beta,
+                           alphasparseDnMatDescr_t matC,
+                           alphasparseDataType computeType,
+                           alphasparseSpMMAlg_t alg,
+                           size_t* bufferSize);
 
 alphasparseStatus_t
 alphasparseSpMM_bufferSize(alphasparseHandle_t handle,
