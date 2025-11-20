@@ -4,7 +4,7 @@
 #include "alphasparse/util/malloc.h"
 #include <alphasparse/util.h>
 
-alphasparseStatus_t destroy_csc(internal_spmat A)
+inline alphasparseStatus_t destroy_csc(internal_spmat A)
 {
     alpha_free(A->row_data);
     alpha_free(A->col_data);

@@ -2,7 +2,7 @@ set(alphasparse_format
   format/alphasparse_create_coo.cpp  
   format/alphasparse_create_csr.cpp 
   format/alphasparse_create_csc.cpp 
-  format/alphasparse_convert_coo.cpp
+  # format/alphasparse_convert_coo.cpp
   format/alphasparse_convert_csr.cpp
   format/alphasparse_convert_csc.cpp
   format/alphasparse_convert_dia.cpp
