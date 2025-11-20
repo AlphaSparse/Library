@@ -1,6 +1,6 @@
 #pragma once
 
-#include <immintrin.h>
+// #include <immintrin.h>
 
 #include "alphasparse/compute.h"
 #include "alphasparse/types.h"
