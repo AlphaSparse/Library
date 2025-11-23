@@ -204,7 +204,7 @@ void MultiplyspECKImplementation(
                                 char * externalBuffer2)
 {
     int maxStaticSharedMemoryPerBlock = handle->properties.sharedMemPerBlock;
-    int maxDynamicSharedMemoryPerBlock = 1;// std::max(handle->properties.sharedMemPerBlockOptin, handle->properties.sharedMemPerBlock);
+    int maxDynamicSharedMemoryPerBlock = 65536;// std::max(handle->properties.sharedMemPerBlockOptin, handle->properties.sharedMemPerBlock);
     // size_t buffer_size = 0;
     if (matB->cols > 1 << 27)
     {

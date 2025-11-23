@@ -7,8 +7,8 @@
 #include <iostream>
 #include "../some_common.h"
 
-static constexpr int spECK_STATIC_MEM_PER_BLOCK{49152};
-static constexpr int spECK_DYNAMIC_MEM_PER_BLOCK{98304}; // V100
+static constexpr int STATIC_MEM_PER_BLOCK{65536};
+static constexpr int DYNAMIC_MEM_PER_BLOCK{65536}; // V100
 
 // template <typename T>
 // __host__ __device__ __forceinline__ T divup(T a, T b)
@@ -117,7 +117,7 @@ spgemm_speck_template(alphasparseHandle_t handle,
   {
   case ALPHA_SPARSE_FORMAT_CSR:
   {
-    spgemm_csr_spECK<T, U, 4, 1024, spECK_DYNAMIC_MEM_PER_BLOCK, spECK_STATIC_MEM_PER_BLOCK>(handle, opA, opB, *((U *)alpha), matA, matB, *((U *)beta), matC, externalBuffer2);
+    spgemm_csr_spECK<T, U, 4, 1024, DYNAMIC_MEM_PER_BLOCK, STATIC_MEM_PER_BLOCK>(handle, opA, opB, *((U *)alpha), matA, matB, *((U *)beta), matC, externalBuffer2);
     break;
   }
   }
