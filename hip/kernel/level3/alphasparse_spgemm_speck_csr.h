@@ -1,5 +1,7 @@
 #include "alphasparse.h"
 #include "csrspgemm_device_speck.h"
+//cite: SpECK: Accelerating GPU Sparse Matrix-Matrix Multiplication through Lightweight Analysis
+//https://github.com/GPUPeople/spECK
 
 template <typename IndexType, typename DataType, int BLOCKS_PER_SM, int THREADS_PER_BLOCK, int MAX_DYNAMIC_SHARED, int MAX_STATIC_SHARED>
 alphasparseStatus_t spgemm_csr_spECK(alphasparseHandle_t handle,
