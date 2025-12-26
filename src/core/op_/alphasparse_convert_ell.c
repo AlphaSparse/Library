@@ -4,6 +4,7 @@
 #include "alphasparse/spmat.h"
 #include "alphasparse/util/check.h"
 #include "alphasparse/util/malloc.h"
+
 alphasparse_status_t convert_ell_datatype_coo(const alpha_internal_spmat *source,
                                              alpha_internal_spmat **dest,
                                              alphasparse_datatype_t datatype) {

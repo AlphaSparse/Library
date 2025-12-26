@@ -1,6 +1,8 @@
+#include "alphasparse.h"
 #include "alphasparse/format.h"
 #include "alphasparse/spmat.h"
 #include "alphasparse/util/check.h"
+#include "alphasparse/util/malloc.h"
 
 #include <stdio.h>
 

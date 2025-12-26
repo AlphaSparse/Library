@@ -1,6 +1,8 @@
+#include "alphasparse.h"
 #include "alphasparse/format.h"
 #include "alphasparse/spmat.h"
 #include "alphasparse/util/check.h"
+#include "alphasparse/util/malloc.h"
 
 alphasparse_status_t convert_gebsr_datatype_coo(const alpha_internal_spmat *source,
                                                alpha_internal_spmat **dest,
