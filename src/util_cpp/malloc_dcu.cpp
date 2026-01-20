@@ -10,7 +10,7 @@ extern "C" {
 }
 #endif
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #ifdef __DCU__

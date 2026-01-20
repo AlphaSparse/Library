@@ -5,7 +5,7 @@
 
 #include "alphasparse/util/malloc.h"
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 

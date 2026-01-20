@@ -8,6 +8,11 @@
 #include <time.h>
 #include <stdint.h>
 
+#ifndef __COMPAR_FN_T
+#define __COMPAR_FN_T
+    typedef int (*__compar_fn_t)(const void *, const void *);
+#endif
+
 inline static int random_int(int m)
 {
     return rand() % m;

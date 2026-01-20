@@ -27,4 +27,4 @@ test :
 # CFLAGS += $(INC) -I$(ROOT)/test/include $(DEFINE)
 # CPPFLAGS += $(INC) -I$(ROOT)/test/include $(DEFINE)
 # $(TEST_COMMON_OBJS) : $(OBJ_DIR)/%.o : %.c
-# 	$(CC) -c -o $@ $^ $(CFLAGS) 
+# 	$(CC) -c -o $@ $^ $(CFLAGS)
