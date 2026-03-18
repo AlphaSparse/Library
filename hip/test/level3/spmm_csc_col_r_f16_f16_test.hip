@@ -86,10 +86,10 @@ cuda_mm()
   hipsparseHandle_t handle = NULL;
   CHECK_CUSPARSE(hipsparseCreate(&handle));
 
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
-  PRINT_IF_HIP_ERROR(
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
+  PRINT_IF_CUDA_ERROR(
     hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
   CHECK_CUDA(hipMemcpy(
     dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
@@ -102,9 +102,9 @@ cuda_mm()
   int* dCscRowInd = NULL;
   half* dCscVal = NULL;
   size_t csc_bufferSize = 0;
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dCscRowInd, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dCscVal, sizeof(half) * nnz));
-  PRINT_IF_HIP_ERROR(
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dCscRowInd, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dCscVal, sizeof(half) * nnz));
+  PRINT_IF_CUDA_ERROR(
     hipMalloc((void**)&dCscColPtr, sizeof(int) * (A_cols + 1)));
   cusparseCsr2cscEx2_bufferSize(handle,
                                 A_rows,
@@ -155,10 +155,10 @@ cuda_mm()
   hipMalloc((void**)&dmatB, sizeof(half) * B_size);
   hipMalloc((void**)&dmatC, sizeof(half) * C_size);
 
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
-  PRINT_IF_HIP_ERROR(
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
+  PRINT_IF_CUDA_ERROR(
     hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
   CHECK_CUDA(hipMemcpy(
     dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
@@ -230,10 +230,10 @@ alpha_mm()
   half* dmatB = NULL;
   half* dmatC = NULL;
 
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
-  PRINT_IF_HIP_ERROR(
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
+  PRINT_IF_CUDA_ERROR(
     hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
 
   CHECK_CUDA(hipMemcpy(
@@ -262,10 +262,10 @@ alpha_mm()
   hipMalloc((void**)&dmatB, sizeof(half) * B_size);
   hipMalloc((void**)&dmatC, sizeof(half) * C_size);
 
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
-  PRINT_IF_HIP_ERROR(
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAval, sizeof(half) * nnz));
+  PRINT_IF_CUDA_ERROR(
     hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
   CHECK_CUDA(hipMemcpy(
     dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
@@ -321,7 +321,7 @@ alpha_mm()
 int
 main(int argc, const char* argv[])
 {
-  args_help_hip(argc, argv);
+  args_help(argc, argv);
   file = args_get_data_file(argc, argv);
   check_flag = args_get_if_check(argc, argv);
   transA = alpha_args_get_transA(argc, argv);

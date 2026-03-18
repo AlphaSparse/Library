@@ -1,0 +1,2 @@
+/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/edit_cache.dir
+/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/rebuild_cache.dir

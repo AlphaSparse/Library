@@ -14,7 +14,7 @@ void alpha_mm(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const
   if (common_arg->format == ALPHA_SPARSE_FORMAT_COO) {
     compute_matrix = cooA;
   } else {
-    alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, cooA, &compute_matrix,
+    alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, common_arg->layout, cooA, &compute_matrix,
                               block_size, block_size);
   }
 
@@ -99,104 +99,6 @@ void alpha_mm(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const
   if (common_arg->format != ALPHA_SPARSE_FORMAT_COO) alphasparse_destroy(compute_matrix);
 }
 
-// void alpha_mm_plain(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const char *x_char,
-//                   int ldx, char *icty_char, int ldy, const char *alpha_char,
-//                   const char *beta_char) {
-//   // 设置使用线程数
-
-//   alphasparse_matrix_t cooA, compute_matrix;
-//   alpha_create_coo_wapper(matrix_data, common_arg->data_type, &cooA);
-//   if (common_arg->format == ALPHA_SPARSE_FORMAT_COO) {
-//     compute_matrix = cooA;
-//   } else {
-//     alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, cooA, &compute_matrix,
-//                               block_size, block_size);
-//   }
-
-//   alpha_timer_t timer;
-//   double total_time = 0.;
-//   alpha_set_thread_num(1);
-//   if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT) {
-//     if (common_arg->warm) {
-//       alpha_call_exit(alphasparse_s_mm_plain(common_arg->transA, *((float *)alpha_char),
-//                                           compute_matrix, common_arg->alpha_descr, common_arg->layout,
-//                                           (float *)x_char, common_arg->columns, ldx,
-//                                           *((float *)beta_char), (float *)icty_char, ldy),
-//                     "alphasparse_s_mm_plain");
-//     }
-//     alpha_timing_start(&timer);
-//     for (int i = 0; i < common_arg->iter; i++) {
-//       alpha_call_exit(alphasparse_s_mm_plain(common_arg->transA, *((float *)alpha_char),
-//                                           compute_matrix, common_arg->alpha_descr, common_arg->layout,
-//                                           (float *)x_char, common_arg->columns, ldx,
-//                                           *((float *)beta_char), (float *)icty_char, ldy),
-//                     "alphasparse_s_mm_plain");
-//     }
-//     alpha_timing_end(&timer);
-//     total_time = alpha_timing_elapsed_time(&timer);
-//   } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE) {
-//     if (common_arg->warm) {
-//       alpha_call_exit(alphasparse_d_mm_plain(common_arg->transA, *((double *)alpha_char),
-//                                           compute_matrix, common_arg->alpha_descr, common_arg->layout,
-//                                           (double *)x_char, common_arg->columns, ldx,
-//                                           *((double *)beta_char), (double *)icty_char, ldy),
-//                     "alphasparse_d_mm_plain");
-//     }
-//     alpha_timing_start(&timer);
-//     for (int i = 0; i < common_arg->iter; i++) {
-//       alpha_call_exit(alphasparse_d_mm_plain(common_arg->transA, *((double *)alpha_char),
-//                                           compute_matrix, common_arg->alpha_descr, common_arg->layout,
-//                                           (double *)x_char, common_arg->columns, ldx,
-//                                           *((double *)beta_char), (double *)icty_char, ldy),
-//                     "alphasparse_d_mm_plain");
-//     }
-//     alpha_timing_end(&timer);
-//     total_time = alpha_timing_elapsed_time(&timer);
-//   } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX) {
-//     if (common_arg->warm) {
-//       alpha_call_exit(
-//           alphasparse_c_mm_plain(common_arg->transA, *((ALPHA_Complex8 *)alpha_char), compute_matrix,
-//                                 common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex8 *)x_char,
-//                                 common_arg->columns, ldx, *((ALPHA_Complex8 *)beta_char),
-//                                 (ALPHA_Complex8 *)icty_char, ldy),
-//           "alphasparse_c_mm_plain");
-//     }
-//     alpha_timing_start(&timer);
-//     for (int i = 0; i < common_arg->iter; i++) {
-//       alpha_call_exit(
-//           alphasparse_c_mm_plain(common_arg->transA, *((ALPHA_Complex8 *)alpha_char), compute_matrix,
-//                                 common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex8 *)x_char,
-//                                 common_arg->columns, ldx, *((ALPHA_Complex8 *)beta_char),
-//                                 (ALPHA_Complex8 *)icty_char, ldy),
-//           "alphasparse_c_mm_plain");
-//     }
-//     alpha_timing_end(&timer);
-//     total_time = alpha_timing_elapsed_time(&timer);
-//   } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX) {
-//     if (common_arg->warm) {
-//       alpha_call_exit(
-//           alphasparse_z_mm_plain(common_arg->transA, *((ALPHA_Complex16 *)alpha_char), compute_matrix,
-//                                 common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex16 *)x_char,
-//                                 common_arg->columns, ldx, *((ALPHA_Complex16 *)beta_char),
-//                                 (ALPHA_Complex16 *)icty_char, ldy),
-//           "alphasparse_z_mm_plain");
-//     }
-//     alpha_timing_start(&timer);
-//     for (int i = 0; i < common_arg->iter; i++) {
-//       alpha_call_exit(
-//           alphasparse_z_mm_plain(common_arg->transA, *((ALPHA_Complex16 *)alpha_char), compute_matrix,
-//                                 common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex16 *)x_char,
-//                                 common_arg->columns, ldx, *((ALPHA_Complex16 *)beta_char),
-//                                 (ALPHA_Complex16 *)icty_char, ldy),
-//           "alphasparse_z_mm_plain");
-//     }
-//     alpha_timing_end(&timer);
-//     total_time = alpha_timing_elapsed_time(&timer);
-//   }
-//   printf("%s time : %lf[ms]\n", "alphasparse_mm_plain", (total_time / common_arg->iter) * 1000);
-//   alphasparse_destroy(cooA);
-//   if (common_arg->format != ALPHA_SPARSE_FORMAT_COO) alphasparse_destroy(compute_matrix);
-// }
 #ifdef __MKL__
 void mkl_mm(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const char *x_char, int ldx,
             char *icty_char, int ldy, const char *alpha_char, const char *beta_char) {
@@ -206,7 +108,7 @@ void mkl_mm(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const c
   if (common_arg->format == ALPHA_SPARSE_FORMAT_COO) {
     compute_matrix = cooA;
   } else {
-    mkl_convert_matrix_wapper(common_arg->format, common_arg->mkl_descr, cooA, &compute_matrix,
+    mkl_convert_matrix_wapper(common_arg->format, common_arg->mkl_descr, common_arg->mkl_layout, cooA, &compute_matrix,
                               block_size, block_size);
   }
 
@@ -289,6 +191,105 @@ void mkl_mm(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const c
   mkl_sparse_destroy(cooA);
   if (common_arg->format != ALPHA_SPARSE_FORMAT_COO) mkl_sparse_destroy(compute_matrix);
 }
+#else
+void alpha_mm_plain(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const char *x_char,
+  int ldx, char *icty_char, int ldy, const char *alpha_char,
+  const char *beta_char) {
+// 设置使用线程数
+
+  alphasparse_matrix_t cooA, compute_matrix;
+  alpha_create_coo_wapper(matrix_data, common_arg->data_type, &cooA);
+  if (common_arg->format == ALPHA_SPARSE_FORMAT_COO) {
+  compute_matrix = cooA;
+  } else {
+  alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, common_arg->layout, cooA, &compute_matrix,
+                  block_size, block_size);
+  }
+
+  alpha_timer_t timer;
+  double total_time = 0.;
+  alpha_set_thread_num(1);
+  if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT) {
+  if (common_arg->warm) {
+  alpha_call_exit(alphasparse_s_mm_plain(common_arg->transA, *((float *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (float *)x_char, common_arg->columns, ldx,
+                            *((float *)beta_char), (float *)icty_char, ldy),
+      "alphasparse_s_mm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(alphasparse_s_mm_plain(common_arg->transA, *((float *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (float *)x_char, common_arg->columns, ldx,
+                            *((float *)beta_char), (float *)icty_char, ldy),
+      "alphasparse_s_mm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE) {
+  if (common_arg->warm) {
+  alpha_call_exit(alphasparse_d_mm_plain(common_arg->transA, *((double *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (double *)x_char, common_arg->columns, ldx,
+                            *((double *)beta_char), (double *)icty_char, ldy),
+      "alphasparse_d_mm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(alphasparse_d_mm_plain(common_arg->transA, *((double *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (double *)x_char, common_arg->columns, ldx,
+                            *((double *)beta_char), (double *)icty_char, ldy),
+      "alphasparse_d_mm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX) {
+  if (common_arg->warm) {
+  alpha_call_exit(
+  alphasparse_c_mm_plain(common_arg->transA, *((ALPHA_Complex8 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex8 *)x_char,
+                  common_arg->columns, ldx, *((ALPHA_Complex8 *)beta_char),
+                  (ALPHA_Complex8 *)icty_char, ldy),
+  "alphasparse_c_mm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(
+  alphasparse_c_mm_plain(common_arg->transA, *((ALPHA_Complex8 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex8 *)x_char,
+                  common_arg->columns, ldx, *((ALPHA_Complex8 *)beta_char),
+                  (ALPHA_Complex8 *)icty_char, ldy),
+  "alphasparse_c_mm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX) {
+  if (common_arg->warm) {
+  alpha_call_exit(
+  alphasparse_z_mm_plain(common_arg->transA, *((ALPHA_Complex16 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex16 *)x_char,
+                  common_arg->columns, ldx, *((ALPHA_Complex16 *)beta_char),
+                  (ALPHA_Complex16 *)icty_char, ldy),
+  "alphasparse_z_mm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(
+  alphasparse_z_mm_plain(common_arg->transA, *((ALPHA_Complex16 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex16 *)x_char,
+                  common_arg->columns, ldx, *((ALPHA_Complex16 *)beta_char),
+                  (ALPHA_Complex16 *)icty_char, ldy),
+  "alphasparse_z_mm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  }
+  printf("%s time : %lf[ms]\n", "alphasparse_mm_plain", (total_time / common_arg->iter) * 1000);
+  alphasparse_destroy(cooA);
+  if (common_arg->format != ALPHA_SPARSE_FORMAT_COO) alphasparse_destroy(compute_matrix);
+  }
 #endif
 
 int main(int argc, const char *argv[]) {

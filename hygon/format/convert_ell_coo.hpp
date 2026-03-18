@@ -53,9 +53,10 @@ alphasparseStatus_t convert_ell_coo(const T *source, T **dest)
     }
     mat->ell_width = ld;
     double ell_padding_ratio = 1.0 * ld * m / source->nnz;
-    printf("padding ratio is %lf\n",ell_padding_ratio);
+    // printf("padding ratio is %lf\n",ell_padding_ratio);
     if((uint64_t )ld * m >= 1l<<31){
         fprintf(stderr,"nnz nums overflow!!!:%ld\n",(uint64_t )ld * m);
+        return ALPHA_SPARSE_STATUS_EXECUTION_FAILED;
         exit(EXIT_FAILURE);
     }
     J *values = (J*)alpha_memalign((uint64_t)ld * m * sizeof(J), DEFAULT_ALIGNMENT);

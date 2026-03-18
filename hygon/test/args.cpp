@@ -345,6 +345,9 @@ alphasparse_layout_t alphasparse_layout_parse(const char *arg) {
 }
 
 alphasparseFormat_t alphasparse_format_parse(const char *arg) {
+  if (strcmp("auto", arg) == 0) {
+    return ALPHA_SPARSE_FORMAT_AUTO;
+  }
   if (strcmp("coo", arg) == 0) {
     return ALPHA_SPARSE_FORMAT_COO;
   }
@@ -378,7 +381,7 @@ alphasparseFormat_t alphasparse_format_parse(const char *arg) {
   if (strcmp("csr5", arg) == 0) {
     return ALPHA_SPARSE_FORMAT_CSR5;
   }
-  if (strcmp("sell_c_sigma", arg) == 0) {
+  if (strcmp("sell_c_sigma", arg) == 0 || strcmp("sell", arg) == 0) {
     return ALPHA_SPARSE_FORMAT_SELL_C_SIGMA;
   }
   printf("invalid format %s\n", arg);

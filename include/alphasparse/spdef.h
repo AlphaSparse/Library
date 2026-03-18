@@ -136,7 +136,8 @@ typedef enum {
   ALPHA_SPARSE_FORMAT_CSR5 = 10,
   ALPHA_SPARSE_FORMAT_SELL_C_SIGMA = 11,
   ALPHA_SPARSE_FORMAT_ELLR = 12,
-  ALPHA_SPARSE_FORMAT_BLOCKED_ELL = 13
+  ALPHA_SPARSE_FORMAT_BLOCKED_ELL = 13,
+  ALPHA_SPARSE_FORMAT_AUTO = 14
 } alphasparseFormat_t;
 
 #define ALPHA_SPARSE_FORMAT_NUM 13
@@ -219,7 +220,8 @@ struct _internal_spmat
   ALPHA_INT* ind_data{};
   ALPHA_INT* dis_data{};
   ALPHA_INT* pointers{};
-  ALPHA_INT* reoeders{};
+  ALPHA_INT* reorders{};
+  ALPHA_INT* block_max_nnz{};
   void* val_data{};
 
   const int* const_row_data{};
@@ -242,6 +244,13 @@ struct _internal_spmat
   int64_t sell_sigma{};
   int64_t sell_blocks{};
   int64_t sell_nnz{};
+
+  int64_t csr5_sigma{};        
+  int64_t csr5_num_tiles{};     
+  ALPHA_INT* tile_ptr{};        
+  ALPHA_INT* tile_desc{};       
+  ALPHA_INT* tile_row_offset{}; 
+  ALPHA_INT* csr_offset{};      
 
   int64_t batch_count{};
   int64_t batch_stride{};
@@ -361,7 +370,6 @@ typedef enum {
   ALPHA_SPARSE_SPMV_ALG_FLAT = 15,
   ALPHA_SPARSE_SPMV_ALG_LINE_ENHANCE = 16,
   ALPHA_SPARSE_SPMV_ALG_LOAD_BALANCE = 17,
-  ALPHA_SPARSE_SPMV_ALG_PFLAT = 18,
 } alphasparseSpMVAlg_t;
 
 typedef enum {

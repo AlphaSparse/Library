@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <math.h>
 #include <memory.h>
+#include <cstdio>
 
 #include "alphasparse/spapi.h"  // spblas API
 #include "alphasparse/util.h"

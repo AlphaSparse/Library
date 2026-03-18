@@ -5,4 +5,4 @@
 #include "gemv_dia.hpp"
 #include "gemv_ell.hpp"
 // #include "gemv_gebsr.hpp"
-// #include "gemv_sell_csigma.hpp"
+#include "gemv_sell_csigma.hpp"

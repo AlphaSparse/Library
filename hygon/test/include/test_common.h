@@ -61,7 +61,7 @@ void alpha_read_coo_wrapper(matrix_data_t *matrix_data, alpha_common_args_t *com
 void malloc_random_fill(alphasparse_datatype_t dt, void **x, const size_t len, unsigned int seed);
 void alpha_create_coo_wapper(matrix_data_t *matrix_data, alphasparse_datatype_t data_type,
                            alphasparse_matrix_t *output);
-void alpha_convert_matrix_wapper(alphasparseFormat_t fmt, struct alpha_matrix_descr descr,
+void alpha_convert_matrix_wapper(alphasparseFormat_t fmt, struct alpha_matrix_descr descr, alphasparse_layout_t layout,
                                alphasparse_matrix_t input, alphasparse_matrix_t *output,
                                int row_block, int col_block);
 void alpha_initialize_alpha_beta(char *alpha_char, char *beta_char, alphasparse_datatype_t data_type);
@@ -72,7 +72,7 @@ void destory_matrix_data(matrix_data_t *matrix_data);
 #ifdef __MKL__
 void mkl_create_coo_wapper(matrix_data_t *matrix_data, alphasparse_datatype_t data_type,
                            sparse_matrix_t *output);
-void mkl_convert_matrix_wapper(alphasparseFormat_t fmt, struct matrix_descr descr,
+void mkl_convert_matrix_wapper(alphasparseFormat_t fmt, struct matrix_descr descr, sparse_layout_t layout, 
                                sparse_matrix_t input, sparse_matrix_t *output, int row_block,
                                int col_block);
 void mkl_initialize_alpha_beta(char *alpha_char, char *beta_char, alphasparse_datatype_t data_type);

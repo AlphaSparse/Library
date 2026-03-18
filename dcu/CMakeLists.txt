@@ -1,3 +1,5 @@
+add_definitions(-D__DCU__)
+
 add_subdirectory(kernel)
 add_subdirectory(format)
 

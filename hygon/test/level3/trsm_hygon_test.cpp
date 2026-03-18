@@ -1,167 +1,369 @@
-#include "test_common.h"
-/**
- * @brief ict trsm csr test
- * @author Zhuoqiang Guo <gzq9425@qq.com>
- */
-
 #include <alphasparse.h>
-#ifdef __MKL__
-#include <mkl.h>
-#endif
 #include <stdio.h>
-#ifdef __MKL__
-static void mkl_trsm(const int argc, const char *argv[], const char *file,
-                     int thread_num, const float alpha, float **ret,
-                     size_t *size) {
-  MKL_INT m, k, nnz;
-  MKL_INT *row_index, *col_index;
-  float *values;
-  mkl_set_num_threads(thread_num);
-  alpha_read_coo(file, &m, &k, &nnz, &row_index, &col_index, &values);
-  if (m != k) {
-    printf("sparse matrix must be Square matrix but (%d,%d)\n", (int)m, (int)k);
-    exit(-1);
-  }
-  MKL_INT columns = args_get_columns(argc, argv, k);
 
-  size_t size_x = k * columns;
-  size_t size_y = m * columns;
-  float *x = (float *)alpha_malloc(size_x * sizeof(float));
-  float *y = (float *)alpha_malloc(size_y * sizeof(float));
-  alpha_fill_random_s((float *)x, 1, size_x);
+#include "test_common.h"
+const int block_size = 4;
 
-  sparse_layout_t layout = mkl_args_get_layout(argc, argv);
-  sparse_operation_t transA = mkl_args_get_transA(argc, argv);
-  struct matrix_descr descr = mkl_args_get_matrix_descrA(argc, argv);
+void alpha_trsm(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const char *x_char, int ldx,
+            char *icty_char, int ldy, const char *alpha_char, const char *beta_char) {
+  // 设置使用线程数
+  alpha_set_thread_num(common_arg->thread_num);
 
-  int ldx = columns, ldy = columns;
-  if (layout == SPARSE_LAYOUT_COLUMN_MAJOR) {
-    ldx = k;
-    ldy = m;
+  alphasparse_matrix_t cooA, compute_matrix;
+  alpha_create_coo_wapper(matrix_data, common_arg->data_type, &cooA);
+  if (common_arg->format == ALPHA_SPARSE_FORMAT_COO) {
+    compute_matrix = cooA;
+  } else {
+    alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, common_arg->layout, cooA, &compute_matrix,
+                              block_size, block_size);
   }
 
-  sparse_matrix_t cooA, csrA;
-  mkl_sparse_s_create_coo(&cooA, SPARSE_INDEX_BASE_ZERO, m, k, nnz, row_index,
-                          col_index, values);
-  mkl_sparse_convert_csr(cooA, SPARSE_OPERATION_NON_TRANSPOSE, &csrA);
   alpha_timer_t timer;
-  alpha_timing_start(&timer);
-  mkl_call_exit(mkl_sparse_s_trsm(transA, alpha, csrA, descr, layout, x,
-                                  columns, ldx, y, ldy),
-                "mkl_sparse_s_trsm");
-  alpha_timing_end(&timer);
-  // printf("%lf,%lf", alpha_timing_elapsed_time(&timer),
-  //        alpha_timing_gflops(&timer, (double)nnz * k * 2 + m * k));
-  printf("%s time : %lf[ms]\n", "mkl_sparse_sm",
-         alpha_timing_elapsed_time(&timer) * 1000);
-
-  mkl_sparse_destroy(cooA);
-  mkl_sparse_destroy(csrA);
-
-  *ret = y;
-  *size = size_y;
-  alpha_free(row_index);
-  alpha_free(col_index);
-  alpha_free(values);
-}
-#endif
-static void alpha_trsm(const int argc, const char *argv[], const char *file,
-                       int thread_num, const float alpha, float **ret_x,
-                       size_t *ret_size_x, ALPHA_INT *ret_ldx, float **ret,
-                       size_t *size, ALPHA_INT *ret_ldc) {
-  ALPHA_INT m, k, nnz;
-  ALPHA_INT *row_index, *col_index;
-  float *values;
-  alpha_read_coo(file, &m, &k, &nnz, &row_index, &col_index, &values);
-  if (m != k) {
-    printf("sparse matrix must be Square matrix but (%d,%d)\n", (int)m, (int)k);
-    exit(-1);
+  double total_time = 0.;
+  if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT) {
+    if (common_arg->warm) {
+      alpha_call_exit(
+          alphasparse_s_trsm(common_arg->transA, *((float *)alpha_char), compute_matrix,
+                          common_arg->alpha_descr, common_arg->layout, (float *)x_char,
+                          common_arg->columns, ldx, (float *)icty_char, ldy),
+          "alphasparse_s_trsm");
+    }
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      alpha_call_exit(
+          alphasparse_s_trsm(common_arg->transA, *((float *)alpha_char), compute_matrix,
+                          common_arg->alpha_descr, common_arg->layout, (float *)x_char,
+                          common_arg->columns, ldx, (float *)icty_char, ldy),
+          "alphasparse_s_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE) {
+    if (common_arg->warm) {
+      alpha_call_exit(alphasparse_d_trsm(common_arg->transA, *((double *)alpha_char), compute_matrix,
+                                    common_arg->alpha_descr, common_arg->layout, (double *)x_char,
+                                    common_arg->columns, ldx, 
+                                    (double *)icty_char, ldy),
+                    "alphasparse_d_trsm");
+    }
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      alpha_call_exit(alphasparse_d_trsm(common_arg->transA, *((double *)alpha_char), compute_matrix,
+                                    common_arg->alpha_descr, common_arg->layout, (double *)x_char,
+                                    common_arg->columns, ldx, 
+                                    (double *)icty_char, ldy),
+                    "alphasparse_d_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX) {
+    if (common_arg->warm) {
+      alpha_call_exit(alphasparse_c_trsm(common_arg->transA, *((ALPHA_Complex8 *)alpha_char),
+                                    compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                                    (ALPHA_Complex8 *)x_char, common_arg->columns, ldx,
+                                    (ALPHA_Complex8 *)icty_char, ldy),
+                    "alphasparse_c_trsm");
+    }
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      alpha_call_exit(alphasparse_c_trsm(common_arg->transA, *((ALPHA_Complex8 *)alpha_char),
+                                    compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                                    (ALPHA_Complex8 *)x_char, common_arg->columns, ldx,
+                                    (ALPHA_Complex8 *)icty_char, ldy),
+                    "alphasparse_c_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX) {
+    if (common_arg->warm) {
+      alpha_call_exit(alphasparse_z_trsm(common_arg->transA, *((ALPHA_Complex16 *)alpha_char),
+                                    compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                                    (ALPHA_Complex16 *)x_char, common_arg->columns, ldx,
+                                    (ALPHA_Complex16 *)icty_char, ldy),
+                    "alphasparse_z_trsm");
+    }
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      alpha_call_exit(alphasparse_z_trsm(common_arg->transA, *((ALPHA_Complex16 *)alpha_char),
+                                    compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                                    (ALPHA_Complex16 *)x_char, common_arg->columns, ldx,
+                                    (ALPHA_Complex16 *)icty_char, ldy),
+                    "alphasparse_z_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
   }
-  ALPHA_INT columns = args_get_columns(argc, argv, k);
-
-  size_t size_x = k * columns;
-  size_t size_y = m * columns;
-  float *x = (float *)alpha_malloc(size_x * sizeof(float));
-  float *y = (float *)alpha_malloc(size_y * sizeof(float));
-  alpha_fill_random_s(x, 1, size_x);
-
-  alphasparse_layout_t layout = alpha_args_get_layout(argc, argv);
-  alphasparseOperation_t transA = alpha_args_get_transA(argc, argv);
-  struct alpha_matrix_descr descr = alpha_args_get_matrix_descrA(argc, argv);
-
-  int ldx = columns, ldy = columns;
-  if (layout == ALPHA_SPARSE_LAYOUT_COLUMN_MAJOR) {
-    ldx = k;
-    ldy = m;
-  }
-  alpha_set_thread_num(thread_num);
-
-  alphasparse_matrix_t cooA, csrA;
-  alpha_call_exit(
-      alphasparse_s_create_coo(&cooA, ALPHA_SPARSE_INDEX_BASE_ZERO, m, k, nnz,
-                               row_index, col_index, values),
-      "alphasparse_s_create_coo");
-  alpha_call_exit(alphasparse_convert_csr(
-                      cooA, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, &csrA),
-                  "alphasparse_convert_csr");
-  alpha_timer_t timer;
-  alpha_timing_start(&timer);
-  alpha_call_exit(alphasparse_s_trsm(transA, alpha, csrA, descr, layout, x,
-                                     columns, ldx, y, ldy),
-                  "alphasparse_s_trsm");
-  alpha_timing_end(&timer);
-  printf("%s time : %lf[ms]\n", "alphasparse_sm",
-         alpha_timing_elapsed_time(&timer) * 1000);
+  printf("%s time : %lf[ms]\n", "alphasparse_trsm", (total_time / common_arg->iter) * 1000);
 
   alphasparse_destroy(cooA);
-  alphasparse_destroy(csrA);
-
-  *ret_x = x;
-  *ret_ldx = ldx;
-  *ret_size_x = size_x;
-
-  *ret = y;
-  *ret_ldc = ldy;
-  *size = size_y;
-  alpha_free(row_index);
-  alpha_free(col_index);
-  alpha_free(values);
+  if (common_arg->format != ALPHA_SPARSE_FORMAT_COO) alphasparse_destroy(compute_matrix);
 }
+
+#ifdef __MKL__
+void mkl_trsm(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const char *x_char, int ldx,
+            char *icty_char, int ldy, const char *alpha_char, const char *beta_char) {
+  // 设置使用线程数
+  sparse_matrix_t cooA, compute_matrix;
+  mkl_create_coo_wapper(matrix_data, common_arg->data_type, &cooA);
+  if (common_arg->format == ALPHA_SPARSE_FORMAT_COO) {
+    compute_matrix = cooA;
+  } else {
+    mkl_convert_matrix_wapper(common_arg->format, common_arg->mkl_descr,  common_arg->mkl_layout, cooA, &compute_matrix,
+                              block_size, block_size);
+  }
+
+  alpha_timer_t timer;
+  double total_time = 0.;
+  mkl_set_num_threads(common_arg->thread_num);
+  if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT) {
+    if (common_arg->warm)
+      mkl_call_exit(
+          mkl_sparse_s_trsm(common_arg->mkl_transA, *((float *)alpha_char), compute_matrix,
+                          common_arg->mkl_descr, common_arg->mkl_layout, (float *)x_char,
+                          common_arg->columns, ldx, (float *)icty_char, ldy),
+          "mkl_sparse_s_trsm");
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      mkl_call_exit(
+          mkl_sparse_s_trsm(common_arg->mkl_transA, *((float *)alpha_char), compute_matrix,
+                          common_arg->mkl_descr, common_arg->mkl_layout, (float *)x_char,
+                          common_arg->columns, ldx, (float *)icty_char, ldy),
+          "mkl_sparse_s_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE) {
+    if (common_arg->warm) {
+      mkl_call_exit(mkl_sparse_d_trsm(common_arg->mkl_transA, *((double *)alpha_char), compute_matrix,
+                                    common_arg->mkl_descr, common_arg->mkl_layout, (double *)x_char,
+                                    common_arg->columns, ldx, 
+                                    (double *)icty_char, ldy),
+                    "mkl_sparse_d_trsm");
+    }
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      mkl_call_exit(mkl_sparse_d_trsm(common_arg->mkl_transA, *((double *)alpha_char), compute_matrix,
+                                    common_arg->mkl_descr, common_arg->mkl_layout, (double *)x_char,
+                                    common_arg->columns, ldx, 
+                                    (double *)icty_char, ldy),
+                    "mkl_sparse_d_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX) {
+    if (common_arg->warm) {
+      mkl_call_exit(mkl_sparse_c_trsm(common_arg->mkl_transA, *((MKL_Complex8 *)alpha_char),
+                                    compute_matrix, common_arg->mkl_descr, common_arg->mkl_layout,
+                                    (MKL_Complex8 *)x_char, common_arg->columns, ldx,
+                                    (MKL_Complex8 *)icty_char, ldy),
+                    "mkl_sparse_c_trsm");
+    }
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      mkl_call_exit(mkl_sparse_c_trsm(common_arg->mkl_transA, *((MKL_Complex8 *)alpha_char),
+                                    compute_matrix, common_arg->mkl_descr, common_arg->mkl_layout,
+                                    (MKL_Complex8 *)x_char, common_arg->columns, ldx,
+                                    (MKL_Complex8 *)icty_char, ldy),
+                    "mkl_sparse_c_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX) {
+    if (common_arg->warm) {
+      mkl_call_exit(mkl_sparse_z_trsm(common_arg->mkl_transA, *((MKL_Complex16 *)alpha_char),
+                                    compute_matrix, common_arg->mkl_descr, common_arg->mkl_layout,
+                                    (MKL_Complex16 *)x_char, common_arg->columns, ldx,
+                                    (MKL_Complex16 *)icty_char, ldy),
+                    "mkl_sparse_z_trsm");
+    }
+    alpha_timing_start(&timer);
+    for (int i = 0; i < common_arg->iter; i++) {
+      mkl_call_exit(mkl_sparse_z_trsm(common_arg->mkl_transA, *((MKL_Complex16 *)alpha_char),
+                                    compute_matrix, common_arg->mkl_descr, common_arg->mkl_layout,
+                                    (MKL_Complex16 *)x_char, common_arg->columns, ldx,
+                                    (MKL_Complex16 *)icty_char, ldy),
+                    "mkl_sparse_z_trsm");
+    }
+    alpha_timing_end(&timer);
+    total_time = alpha_timing_elapsed_time(&timer);
+  }
+  printf("%s time : %lf[ms]\n", "mkl_sparse_trsm", (total_time / common_arg->iter) * 1000);
+  mkl_sparse_destroy(cooA);
+  if (common_arg->format != ALPHA_SPARSE_FORMAT_COO) mkl_sparse_destroy(compute_matrix);
+}
+#else
+
+void alpha_trsm_plain(matrix_data_t *matrix_data, alpha_common_args_t *common_arg, const char *x_char,
+  int ldx, char *icty_char, int ldy, const char *alpha_char,
+  const char *beta_char) {
+// 设置使用线程数
+
+  alphasparse_matrix_t cooA, compute_matrix;
+  alpha_create_coo_wapper(matrix_data, common_arg->data_type, &cooA);
+  if (common_arg->format == ALPHA_SPARSE_FORMAT_COO) {
+  compute_matrix = cooA;
+  } else {
+  alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, common_arg->layout, cooA, &compute_matrix,
+                  block_size, block_size);
+  }
+
+  alpha_timer_t timer;
+  double total_time = 0.;
+  alpha_set_thread_num(1);
+  if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT) {
+  if (common_arg->warm) {
+  alpha_call_exit(alphasparse_s_trsm_plain(common_arg->transA, *((float *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (float *)x_char, common_arg->columns, ldx,
+                            (float *)icty_char, ldy),
+      "alphasparse_s_trsm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(alphasparse_s_trsm_plain(common_arg->transA, *((float *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (float *)x_char, common_arg->columns, ldx,
+                            (float *)icty_char, ldy),
+      "alphasparse_s_trsm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE) {
+  if (common_arg->warm) {
+  alpha_call_exit(alphasparse_d_trsm_plain(common_arg->transA, *((double *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (double *)x_char, common_arg->columns, ldx,
+                            (double *)icty_char, ldy),
+      "alphasparse_d_trsm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(alphasparse_d_trsm_plain(common_arg->transA, *((double *)alpha_char),
+                            compute_matrix, common_arg->alpha_descr, common_arg->layout,
+                            (double *)x_char, common_arg->columns, ldx,
+                            (double *)icty_char, ldy),
+      "alphasparse_d_trsm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_FLOAT_COMPLEX) {
+  if (common_arg->warm) {
+  alpha_call_exit(
+  alphasparse_c_trsm_plain(common_arg->transA, *((ALPHA_Complex8 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex8 *)x_char,
+                  common_arg->columns, ldx, 
+                  (ALPHA_Complex8 *)icty_char, ldy),
+  "alphasparse_c_trsm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(
+  alphasparse_c_trsm_plain(common_arg->transA, *((ALPHA_Complex8 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex8 *)x_char,
+                  common_arg->columns, ldx, (ALPHA_Complex8 *)icty_char, ldy),
+  "alphasparse_c_trsm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  } else if (common_arg->data_type == ALPHA_SPARSE_DATATYPE_DOUBLE_COMPLEX) {
+  if (common_arg->warm) {
+  alpha_call_exit(
+  alphasparse_z_trsm_plain(common_arg->transA, *((ALPHA_Complex16 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex16 *)x_char,
+                  common_arg->columns, ldx, (ALPHA_Complex16 *)icty_char, ldy),
+  "alphasparse_z_trsm_plain");
+  }
+  alpha_timing_start(&timer);
+  for (int i = 0; i < common_arg->iter; i++) {
+  alpha_call_exit(
+  alphasparse_z_trsm_plain(common_arg->transA, *((ALPHA_Complex16 *)alpha_char), compute_matrix,
+                  common_arg->alpha_descr, common_arg->layout, (ALPHA_Complex16 *)x_char,
+                  common_arg->columns, ldx, (ALPHA_Complex16 *)icty_char, ldy),
+  "alphasparse_z_trsm_plain");
+  }
+  alpha_timing_end(&timer);
+  total_time = alpha_timing_elapsed_time(&timer);
+  }
+  printf("%s time : %lf[ms]\n", "alphasparse_trsm_plain", (total_time / common_arg->iter) * 1000);
+  alphasparse_destroy(cooA);
+  if (common_arg->format != ALPHA_SPARSE_FORMAT_COO) alphasparse_destroy(compute_matrix);
+}
+#endif
 
 int main(int argc, const char *argv[]) {
   // args
+  alpha_common_args_t common_arg;
+  // read_coo
+  matrix_data_t matrix_data;
   args_help(argc, argv);
-  const char *file = args_get_data_file(argc, argv);
-  int thread_num = args_get_thread_num(argc, argv);
-  bool check = args_get_if_check(argc, argv);
 
-  const float alpha_alpha = 2.f;
-  printf("thread num %d\n", thread_num);
-#ifdef __MKL__
-  const float mkl_alpha = 2.f;
-  float *mkl_y;
-  size_t size_mkl_y;
-#endif
-  float *alpha_y, *alpha_x;
-  size_t size_alpha_y, size_alpha_x;
-
-  ALPHA_INT ldc, ldx;
-
-  int status = 0;
-  alpha_trsm(argc, argv, file, thread_num, alpha_alpha, &alpha_x, &size_alpha_x,
-             &ldx, &alpha_y, &size_alpha_y, &ldc);
-
-  if (check) {
-#ifdef __MKL__
-    mkl_trsm(argc, argv, file, thread_num, mkl_alpha, &mkl_y, &size_mkl_y);
-    // printf("size_mkl_y %d,size_alpha_y %d\n",size_mkl_y,size_alpha_y);
-    status =
-        check_s((float *)mkl_y, size_mkl_y, (float *)alpha_y, size_alpha_y);
-
-    alpha_free(mkl_y);
-#endif
+  alpha_timer_t timer;
+  // init args
+  parse_args_and_initialize(argc, argv, &common_arg);
+  alpha_timing_start(&timer);
+  alpha_read_coo_wrapper(&matrix_data, &common_arg, FILE_SOURCE, block_size);
+  alpha_timing_end(&timer);
+  double time_elapsed = alpha_timing_elapsed_time(&timer);
+  printf("io elapesd %f [ms]\n", time_elapsed * 1e3);
+  // args
+  int ldx, ldy;
+  ldx = common_arg.columns, ldy = common_arg.columns;
+  ALPHA_INT rowsx = matrix_data.k, rowsy = matrix_data.m;
+  if (common_arg.transA == ALPHA_SPARSE_OPERATION_TRANSPOSE ||
+      common_arg.transA == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE) {
+    rowsx = matrix_data.m;
+    rowsy = matrix_data.k;
   }
-  printf("\n");
-  alpha_free(alpha_y);
-  return status;
+  if (common_arg.layout == ALPHA_SPARSE_LAYOUT_COLUMN_MAJOR) {
+    ldx = rowsx;
+    ldy = rowsy;
+  }
+  ALPHA_INT64 sizex = rowsx * common_arg.columns;
+  ALPHA_INT64 sizey = rowsy * common_arg.columns;
+  char *x_char;
+  char *icty_char;
+  char *icty_plain_char;
+  char *alpha_alpha_char;
+  char *alpha_beta_char;
+
+#ifdef __MKL__
+  char *mkl_alpha_char;
+  char *mkl_beta_char;
+#endif
+
+  alpha_alpha_char = (char *)alpha_malloc(bytes_type[common_arg.data_type]);
+  alpha_beta_char = (char *)alpha_malloc(bytes_type[common_arg.data_type]);
+
+#ifdef __MKL__
+  mkl_alpha_char = (char *)alpha_malloc(bytes_type[common_arg.data_type]);
+  mkl_beta_char = (char *)alpha_malloc(bytes_type[common_arg.data_type]);
+#endif
+  alpha_initialize_alpha_beta(alpha_alpha_char, alpha_beta_char, common_arg.data_type);
+#ifdef __MKL__
+  mkl_initialize_alpha_beta(mkl_alpha_char, mkl_beta_char, common_arg.data_type);
+#endif
+
+  malloc_random_fill(common_arg.data_type, (void **)&x_char, sizex, 0);  // x,y
+  malloc_random_fill(common_arg.data_type, (void **)&icty_char, sizey,
+                     1);  // x,y
+  // printf("thread_num : %d\n",thread_num);
+  alpha_trsm(&matrix_data, &common_arg, x_char, ldx, icty_char, ldy, alpha_alpha_char, alpha_beta_char);
+  if (common_arg.check) {
+    malloc_random_fill(common_arg.data_type, (void **)&icty_plain_char, sizey,
+                       1);  // x,y
+#ifdef __MKL__
+    mkl_trsm(&matrix_data, &common_arg, x_char, ldx, icty_plain_char, ldy, mkl_alpha_char,
+                 mkl_beta_char);
+#else 
+    alpha_trsm_plain(&matrix_data, &common_arg, x_char, ldx, icty_plain_char, ldy, alpha_alpha_char,
+                 alpha_beta_char);
+#endif
+    check_arm(common_arg.data_type, icty_char, sizey, icty_plain_char);
+    alpha_free(icty_plain_char);
+  }
+  alpha_free(x_char);
+  alpha_free(icty_char);
+
+  destory_matrix_data(&matrix_data);
+  return 0;
 }

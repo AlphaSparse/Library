@@ -33,9 +33,9 @@ void alpha_spmmd(matrix_data_t *matrix_data_lhs, matrix_data_t *matrix_data_rhs,
     compute_matrix_lhs = coo_lhs;
     compute_matrix_rhs = coo_rhs;
   } else {
-    alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, coo_lhs,
+    alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, common_arg->layout, coo_lhs,
                               &compute_matrix_lhs, block_size, block_size);
-    alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, coo_rhs,
+    alpha_convert_matrix_wapper(common_arg->format, common_arg->alpha_descr, common_arg->layout, coo_rhs,
                               &compute_matrix_rhs, block_size, block_size);
   }
 
@@ -113,9 +113,9 @@ void mkl_spmmd(matrix_data_t *matrix_data_lhs, matrix_data_t *matrix_data_rhs,
     compute_matrix_lhs = coo_lhs;
     compute_matrix_rhs = coo_rhs;
   } else {
-    mkl_convert_matrix_wapper(common_arg->format, common_arg->mkl_descr, coo_lhs,
+    mkl_convert_matrix_wapper(common_arg->format, common_arg->mkl_descr, common_arg->mkl_layout, coo_lhs,
                               &compute_matrix_lhs, block_size, block_size);
-    mkl_convert_matrix_wapper(common_arg->format, common_arg->mkl_descr, coo_rhs,
+    mkl_convert_matrix_wapper(common_arg->format, common_arg->mkl_descr, common_arg->mkl_layout, coo_rhs,
                               &compute_matrix_rhs, block_size, block_size);
   }
 

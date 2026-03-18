@@ -13,6 +13,7 @@
 #endif
 #ifdef __HIP__
 #include <hip/hip_runtime.h>
+#include <hip/hip_complex.h>
 #include "type/r_f32_types.h"
 #include "type/r_f64_types.h"
 #include "type/r_i8_types.h"

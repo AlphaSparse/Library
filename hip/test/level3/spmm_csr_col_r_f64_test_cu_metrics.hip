@@ -97,10 +97,10 @@ cuda_mm()
   hipMalloc((void**)&dmatB, sizeof(double) * B_size);
   hipMalloc((void**)&dmatC, sizeof(double) * C_size);
 
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
-  PRINT_IF_HIP_ERROR(hipMalloc((void**)&dAval, sizeof(double) * nnz));
-  PRINT_IF_HIP_ERROR(
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dArow, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+  PRINT_IF_CUDA_ERROR(hipMalloc((void**)&dAval, sizeof(double) * nnz));
+  PRINT_IF_CUDA_ERROR(
     hipMalloc((void**)&dCsrRowPtr, sizeof(int) * (A_rows + 1)));
   CHECK_CUDA(hipMemcpy(
     dArow, coo_row_index, nnz * sizeof(int), hipMemcpyHostToDevice));
@@ -181,7 +181,7 @@ cuda_mm()
 int
 main(int argc, const char* argv[])
 {
-  args_help_hip(argc, argv);
+  args_help(argc, argv);
   file = args_get_data_file(argc, argv);
 	metric_file = args_save_metrics_file(argc, argv);
   check_flag = args_get_if_check(argc, argv);

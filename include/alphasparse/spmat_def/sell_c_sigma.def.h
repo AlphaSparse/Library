@@ -55,6 +55,7 @@ assume SIGMA=2, C=2
 // ( those special rows does not constitute the sell_c_sigma)
 // and those rows are categorized into 5 bins: [0],[1],[2],[3,4],[5,8] )
 typedef struct {
+  //通用信息部分
   ALPHA_INT rows;
   ALPHA_INT cols;
   ALPHA_INT rows_sell_end;
@@ -63,30 +64,35 @@ typedef struct {
   ALPHA_INT num_special_bins;  // =NUM_BINS (5)
   double *bins_padding_ratio;  //
 
-  // bin part
+  // bin part 即为了解决短行问题 单独拿出来进行分类 划分为5种bin 即长度为0 1 2 3-4 5-8这五种情况 单独处理
   ALPHA_INT *bins_row_start;
   ALPHA_INT *bins_row_end;
   ALPHA_INT *bins_nz_start;   // start offset of each bins : dim num_singular_bins
   ALPHA_INT *bins_nz_end;     // end offset of each bins : dim num_singular_bins
   ALPHA_INT *bins_indices;
   float *bins_values;
+//这里是sell的真实
+  ALPHA_INT *rows_indx;              // 行重排记录：保存原始行号，便于还原
 
-  ALPHA_INT *rows_indx;  // record orignal row index
+  ALPHA_INT C;                       // 每个 chunk 有 C 行（SELL-C 中的 C）
+  ALPHA_INT SIGMA;                   // 每个 SIGMA 行作为一组进行重排（对齐用）
 
-  // sell part
-  ALPHA_INT C;           // for those length > 8
-  ALPHA_INT SIGMA;       // for those length > 8
-  ALPHA_INT num_chunks;  // for those length > 8
-  ALPHA_INT *indices;
-  float *values;           // nz values stored chunk by chunk
-  ALPHA_INT *rows_length;  // width of each chunk (dont use by now)
+  ALPHA_INT num_chunks;              // SELL-C 分的 chunk 个数
 
-  ALPHA_INT *chunks_start;    // start offset of each chunk : dim num_chunk
-  ALPHA_INT *chunks_end;      // end offset of each chunk : dim num_chunk
-  double sell_padding_ratio;  // stored nnz / actual nnz
+  ALPHA_INT *indices;                // 所有 chunk 的列索引（按 chunk 排列）
+  float *values;                     // 所有 chunk 的非零值（按 chunk 排列）
 
-  double total_padding_ratio;  // stored nnz / actual nnz
+  ALPHA_INT *rows_length;            // 每个 chunk 内的最大行宽（即补齐后的列数）
+                                    // 注意注释说“现在没用”
 
+  ALPHA_INT *chunks_start;           // 每个 chunk 的存储起始偏移
+  ALPHA_INT *chunks_end;             // 每个 chunk 的结束偏移
+
+  double sell_padding_ratio;         // SELL 部分的 padding ratio（有效 / 实际存储）
+
+  double total_padding_ratio;        // 整个矩阵（bin+SELL）的 padding ratio
+
+//dcu
   float *d_values;           // nz values stored chunk by chunk
   ALPHA_INT *d_rows_indx;    // start offset of each chunk
   ALPHA_INT *d_rows_length;  // width of each chunk

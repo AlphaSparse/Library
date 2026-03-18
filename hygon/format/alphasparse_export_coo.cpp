@@ -30,7 +30,7 @@ alphasparseStatus_t alphasparse_export_coo_template(const alphasparse_matrix_t s
     alphasparseStatus_t ONAME(const alphasparse_matrix_t source,                                        \
                           alphasparseIndexBase_t *indexing, /* indexing: C-style or Fortran-style */    \
                           ALPHA_INT *rows,                                                              \
-                          ALPHA_INT *cols,                                                              \   
+                          ALPHA_INT *cols,                                                              \
                           ALPHA_INT **row_indx,                                                         \
                           ALPHA_INT **col_indx,                                                         \
                           TYPE **values,                                                                \

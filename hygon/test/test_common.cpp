@@ -1,5 +1,5 @@
 #include "./include/test_common.h"
-
+#include "./include/predict_format.h"
 #include "alphasparse.h"
 
 // #ifndef __MKL__
@@ -35,7 +35,7 @@ void parse_args_and_initialize(int argc, const char *argv[],
   common_arg->param0 = args_get_param0(argc,argv);
   common_arg->param1 = args_get_param1(argc,argv);
   alpha_set_thread_num(common_arg->thread_num);
-  printf("thread num : %d\n", common_arg->thread_num);
+  // printf("thread num : %d\n", common_arg->thread_num);
 }
 
 void alpha_read_coo_wrapper(matrix_data_t *matrix_data,
@@ -140,13 +140,49 @@ void alpha_create_coo_wapper(matrix_data_t *matrix_data,
         "alphasparse_d_create_coo");
   }
 }
-
+void alpha_sout(alphasparseFormat_t fmt, int c, int sigma){
+  if (fmt == ALPHA_SPARSE_FORMAT_COO) {
+    printf("coo\n");
+  }else if (fmt == ALPHA_SPARSE_FORMAT_CSR) {
+    printf("csr\n");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_CSC) {
+    printf("csc\n");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_CSR5) {
+    printf("csr5\n");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_BSR) {
+    printf("bsr\n");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_SKY) {
+    printf("sky\n");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_DIA) {
+    printf("dia\n");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_ELL) {
+    printf("ell\n");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_SELL_C_SIGMA) {
+    printf("sell_%d_%d\n", c, sigma);
+  }else{
+    printf("invalid format\n");
+  }
+}
 void alpha_convert_matrix_wapper(alphasparseFormat_t fmt,
                                  struct alpha_matrix_descr descr,
+                                 alphasparse_layout_t layout,
                                  alphasparse_matrix_t input,
                                  alphasparse_matrix_t *output,
                                  int para_int1, int para_int2) {
-  if (fmt == ALPHA_SPARSE_FORMAT_CSR) {
+  int c, sigma;
+  c = para_int1;
+  sigma = para_int2;
+  if (fmt == ALPHA_SPARSE_FORMAT_AUTO){
+    fmt = predict_best_format_from_coo(input->mat, &c, &sigma);
+    // printf("auto select: %d\n", fmt);
+    alpha_sout(fmt, c, sigma);
+    return;
+  }
+
+  if (fmt == ALPHA_SPARSE_FORMAT_COO) {
+    *output = input;
+  }
+  else if (fmt == ALPHA_SPARSE_FORMAT_CSR) {
     alpha_call_exit(alphasparse_convert_csr(
                         input, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_csr");
@@ -154,9 +190,11 @@ void alpha_convert_matrix_wapper(alphasparseFormat_t fmt,
     alpha_call_exit(alphasparse_convert_csc(
                         input, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_csc");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_CSR5) {
+    // alpha_call_exit(alphasparse_convert_csr5(-t
   } else if (fmt == ALPHA_SPARSE_FORMAT_BSR) {
     alpha_call_exit(alphasparse_convert_bsr(
-                        input, para_int1, ALPHA_SPARSE_LAYOUT_ROW_MAJOR,
+                        input, para_int1, layout,
                         ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_bsr");
   } else if (fmt == ALPHA_SPARSE_FORMAT_SKY) {
@@ -172,18 +210,23 @@ void alpha_convert_matrix_wapper(alphasparseFormat_t fmt,
     alpha_call_exit(alphasparse_convert_ell(
                         input, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
                     "alphasparse_convert_ell");
+  } else if (fmt == ALPHA_SPARSE_FORMAT_SELL_C_SIGMA) {
+    alphasparse_matrix_t csr_input;
+    alpha_call_exit(alphasparse_convert_csr(
+                        input, ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, &csr_input),
+                    "alphasparse_convert_csr");
+    alpha_call_exit(
+        alphasparse_convert_sell_csigma(csr_input, true, para_int1, para_int2,
+                                  ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
+        "alphasparse_convert_sell-csigma");
   // } else if (fmt == ALPHA_SPARSE_FORMAT_GEBSR) {
   //   alpha_call_exit(
   //       alphasparse_convert_gebsr(input, para_int1, para_int2,
   //                                 ALPHA_SPARSE_LAYOUT_ROW_MAJOR,
   //                                 ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
   //       "alphasparse_convert_gebsr");
-  // } else if (fmt == ALPHA_SPARSE_FORMAT_SELL_C_SIGMA) {
-  //   alpha_call_exit(
-  //       alphasparse_convert_sell_csigma(input, true, para_int1, para_int2,
-  //                                 ALPHA_SPARSE_OPERATION_NON_TRANSPOSE, output),
-  //       "alphasparse_convert_gebsr");
   } else {
+    
     printf("invalid format to conversion\n");
     exit(-1);
   }
@@ -283,7 +326,7 @@ void mkl_create_coo_wapper(matrix_data_t *matrix_data,
 }
 
 void mkl_convert_matrix_wapper(alphasparseFormat_t fmt,
-                               struct matrix_descr descr, sparse_matrix_t input,
+                               struct matrix_descr descr, sparse_layout_t layout, sparse_matrix_t input,
                                sparse_matrix_t *output, int row_block,
                                int col_block) {
   if (fmt == ALPHA_SPARSE_FORMAT_CSR) {
@@ -298,7 +341,7 @@ void mkl_convert_matrix_wapper(alphasparseFormat_t fmt,
     // exit(-1);
   } else if (fmt == ALPHA_SPARSE_FORMAT_BSR) {
     mkl_call_exit(
-        mkl_sparse_convert_bsr(input, row_block, SPARSE_LAYOUT_ROW_MAJOR,
+        mkl_sparse_convert_bsr(input, row_block, layout,
                                SPARSE_OPERATION_NON_TRANSPOSE, output),
         "mkl_sparse_convert_bsr");
   } else {

@@ -1,4 +1,4 @@
-#pragma once
+pragma once
 
 #include "alphasparse.h"
 #ifdef __CUDA__
@@ -51,11 +51,6 @@ make_value(float z)
 #endif
 
 #ifdef __HIP__
-
-#define CHECK_CUSPARSE(func)                                         \
-  {                                                              \
-  }
-  
 template <typename T>
 __device__ __host__ __forceinline__ T
 make_value(float z)
@@ -636,80 +631,4 @@ __host__ __device__ __forceinline__ T ceildivT(const T nom, const T denom)
       exit(-1);                                                  \
     }                                                            \
   }
-
-__device__ __forceinline__ float
-alphasparse_fma(float p,
-                float q,
-                float r)
-{
-    return fma(p, q, r);
-}
-
-__device__ __forceinline__ double
-alphasparse_fma(double p,
-                double q,
-                double r)
-{
-    return fma(p, q, r);
-}
-
-__device__ __forceinline__ hipFloatComplex
-alphasparse_fma(hipFloatComplex p,
-                hipFloatComplex q,
-                hipFloatComplex r)
-{
-    return {};
-}
-
-__device__ __forceinline__ hipDoubleComplex
-alphasparse_fma(hipDoubleComplex p,
-                hipDoubleComplex q,
-                hipDoubleComplex r)
-{
-    return {};
-}
-
-
-
-
-template <unsigned int WFSIZE>
-__device__ __forceinline__ void alphasparse_wfreduce_sum(int *sum)
-{
-    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
-    {
-        *sum += __shfl_xor(*sum, i);
-    }
-}
-
-template <unsigned int WFSIZE>
-__device__ __forceinline__ void alphasparse_wfreduce_sum(int64_t *sum)
-{
-    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
-    {
-        *sum += __shfl_xor(*sum, i);
-    }
-}
-
-template <unsigned int WFSIZE>
-__device__ __forceinline__ float alphasparse_wfreduce_sum(float sum)
-{
-    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
-    {
-        sum += __shfl_xor(sum, i);
-    }
-
-    return sum;
-}
-
-template <unsigned int WFSIZE>
-__device__ __forceinline__ double alphasparse_wfreduce_sum(double sum)
-{
-    for (int i = WFSIZE >> 1; i > 0; i >>= 1)
-    {
-        sum += __shfl_xor(sum, i);
-    }
-
-    return sum;
-}
-
-#endif
+  #endif

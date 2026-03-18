@@ -1,0 +1,20 @@
+set(alphasparse_source
+  kernel/level1/alphasparse_axpy_plain.cpp
+  kernel/level1/alphasparse_dotci_sub_plain.cpp
+  kernel/level1/alphasparse_doti_plain.cpp
+  kernel/level1/alphasparse_dotui_sub_plain.cpp
+  kernel/level1/alphasparse_gthr_plain.cpp
+  kernel/level1/alphasparse_gthrz_plain.cpp
+  kernel/level1/alphasparse_rot_plain.cpp
+  kernel/level1/alphasparse_sctr_plain.cpp
+  kernel/level2/alphasparse_mv_plain.cpp
+  kernel/level2/alphasparse_trsv_plain.cpp
+  kernel/level3/alphasparse_set_value_plain.cpp
+  kernel/level3/alphasparse_add_plain.cpp
+  kernel/level3/alphasparse_mm_plain.cpp
+  kernel/level3/alphasparse_spmm_plain.cpp
+  kernel/level3/alphasparse_spmmd_plain.cpp
+  kernel/level3/alphasparse_trsm_plain.cpp
+  kernel/level3/alphasparse_update_values_plain.cpp
+  PARENT_SCOPE
+)

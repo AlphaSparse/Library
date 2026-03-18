@@ -58,9 +58,45 @@ spmm_template(alphasparseHandle_t handle,
 																				externalBuffer);
 						break;
 					}
+					case ALPHASPARSE_SPMM_CSR_ALG12: {
+						csrspmm_rb_sr_v2<T, U, V, W, true>(handle,
+																				(T)matC->rows,
+																				(T)matC->cols,
+																				(T)matA->cols,
+																				(T)matA->nnz,
+																				*((W*)alpha),
+																				(T*)matA->row_data,
+																				(T*)matA->col_data,
+																				(U*)matA->val_data,
+																				(U*)matB->values,
+																				(T)matB->ld,
+																				*((W*)beta),
+																				(V*)matC->values,
+																				(T)matC->ld,
+																				externalBuffer);
+						break;
+					}
 					default:
 					case ALPHASPARSE_SPMM_CSR_ALG2: {
 						csrspmm_eb_sr_v2<T, U, V, W, true>(handle,
+																				(T)matC->rows,
+																				(T)matC->cols,
+																				(T)matA->cols,
+																				(T)matA->nnz,
+																				*((W*)alpha),
+																				(T*)matA->row_data,
+																				(T*)matA->col_data,
+																				(U*)matA->val_data,
+																				(U*)matB->values,
+																				(T)matB->ld,
+																				*((W*)beta),
+																				(V*)matC->values,
+																				(T)matC->ld,
+																				externalBuffer);
+						break;
+					}
+					case ALPHASPARSE_SPMM_CSR_ALG22: {
+						csrspmm_eb_sr<T, U, V, W, true>(handle,
 																				(T)matC->rows,
 																				(T)matC->cols,
 																				(T)matA->cols,
@@ -649,7 +685,20 @@ alphasparseSpMM(alphasparseHandle_t handle,
   //   return spmm_template<int32_t, half2, half2, hipFloatComplex>(
   //     handle, opA, opB, alpha, matA, matB, beta, matC, alg, externalBuffer);
   // }
-
+#if (CUDA_ARCH >= 80)
+  // if (matA->row_type == ALPHA_SPARSE_INDEXTYPE_I32 &&
+  //     matA->data_type == ALPHA_R_16BF && matC->data_type == ALPHA_R_16BF &&
+  //     computeType == ALPHA_R_32F) {
+  //   return spmm_template<int32_t, nv_bfloat16, nv_bfloat16, float>(
+  //     handle, opA, opB, alpha, matA, matB, beta, matC, alg, externalBuffer);
+  // }
+  // if (matA->row_type == ALPHA_SPARSE_INDEXTYPE_I32 &&
+  //     matA->data_type == ALPHA_C_16BF && matC->data_type == ALPHA_C_16BF &&
+  //     computeType == ALPHA_C_32F) {
+  //   return spmm_template<int32_t, nv_bfloat162, nv_bfloat162, hipFloatComplex>(
+  //     handle, opA, opB, alpha, matA, matB, beta, matC, alg, externalBuffer);
+  // }
+#endif
   return ALPHA_SPARSE_STATUS_SUCCESS;
 }
 
@@ -720,6 +769,7 @@ alphasparseSpMM_bufferSize(alphasparseHandle_t handle,
         break;
       }
       default:
+      case ALPHASPARSE_SPMM_CSR_ALG22: 
       case ALPHASPARSE_SPMM_CSR_ALG2: {
         int work_size;
         int N = matC->cols;

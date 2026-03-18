@@ -31,9 +31,7 @@ static __forceinline__ __device__ void merge_path_search(
 
 template<int block_size,
          typename T>
-__global__ void 
-__launch_bounds__(512)
-merge_path_search_kernel(
+__global__ void merge_path_search_kernel(
   T *start_xs,
   T *start_ys,
   T num_rows,

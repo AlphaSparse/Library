@@ -5,12 +5,14 @@
  */
 #include "spdef.h"
 // #include "types.h"
-
-// #include "./spmat_def/coo.def.cuh"
-// #include "./spmat_def/csr.def.cuh"
-
+#ifdef __CUDA__
+#include "./spmat_def/coo.def.cuh"
+#include "./spmat_def/csr.def.cuh"
+#else
 #include "./spmat_def/coo.def.h"
 #include "./spmat_def/csr.def.h"
+#endif
+
 #include "./spmat_def/csc.def.h"
 #include "./spmat_def/bsr.def.h"
 #include "./spmat_def/dia.def.h"

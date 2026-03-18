@@ -188,14 +188,20 @@ cuda_spsv()
                              vecY,
                              cuda_datatype,
                              cuda_alg,
-                             spsvDescr));
+                             spsvDescr,
+                             dBuffer));
+        // hipDeviceSynchronize();
         GPU_TIMER_END(time_solve, event_start, event_stop);
+        // printf("%.4lf\n", time_solve);
         if (i >= warmup)
         {
             times_solve.push_back(time_solve);
         }
     }
     cuda_time_solve_avg = get_avg_time_2(times_solve);
+    // cuda_bandwidth = static_cast<double>(sizeof(double)) * (2 * m + nnz) +
+    //                  sizeof(int) * (m + 1 + nnz) / cuda_time_solve_avg / 1e6;
+    // cuda_gflops = static_cast<double>(2 * nnz) / cuda_time_solve_avg / 1e6;
 
     CHECK_CUDA(hipMemcpy(cuda_y, dY, sizeof(DATA_TYPE) * m, hipMemcpyDeviceToHost));
 
@@ -405,9 +411,6 @@ int main(int argc, const char *argv[])
     // 矩阵行元素求和归一化
     mat_adjust_nnz_d(coo_row_index, coo_col_index, coo_values, m, n, nnz, alpha_fillmode, alpha_diagtype);
 
-    // 只取三角部分
-    mat_get_triangular_part(&coo_row_index, &coo_col_index, &coo_values, m, n, nnz, alpha_fillmode);
-	
     // init x y
     x_val = (DATA_TYPE *)alpha_malloc(n * sizeof(DATA_TYPE));
 
@@ -526,11 +529,10 @@ int main(int argc, const char *argv[])
             outfile << "\n";
             outfile.close();
         }
-//        printf("%.6lf,", speedup_analysis);
-//        printf("%.6lf,", speedup_solve);
-		printf("%.6lf,%.6lf,", cuda_time_total, alpha_time_total);
-		printf("%.6lf,", speedup);
-//        printf("\n");
+        printf("%.6lf,", speedup_analysis);
+        printf("%.6lf,", speedup_solve);
+        printf("%.6lf,", speedup);
+        printf("\n");
         if (check_flag)
         {
             std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);

@@ -132,9 +132,16 @@ alpha_abs(const cuFloatComplex& z)
   float real = alpha_abs(z.x);
   float imag = alpha_abs(z.y);
 
-  return real > imag ? (imag /= real, real * alpha_sqrt(imag * imag + 1))
-         : imag      ? (real /= imag, imag * alpha_sqrt(real * real + 1))
-                     : 0;
+  if(real > imag)
+    return (imag /= real, real * alpha_sqrt(imag * imag + 1));
+  else if(imag)
+      return (real /= imag, imag * alpha_sqrt(real * real + 1));
+    else 
+      return 0;
+
+  // return real > imag ? (imag /= real, real * alpha_sqrt(imag * imag + 1))
+  //        : imag      ? (real /= imag, imag * alpha_sqrt(real * real + 1))
+  //                    : 0;
   // // cuFloatComplex r = make_cuFloatComplex (sqrt(z.x * z.x + z.y * z.y),
   // 0.0f);
   // // cuFloatComplex r = make_cuFloatComplex (sqrtf(z.x * z.x), 0.0f);

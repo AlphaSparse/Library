@@ -1,126 +1,109 @@
-cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
-project("AlphaSparse-Library" LANGUAGES CXX C)
+cmake_minimum_required(VERSION 3.23 FATAL_ERROR)
+project("AlphaSparse" LANGUAGES CXX C)
+set (CMAKE_CXX_STANDARD 17)
 
-# --- 基本编译设置 ---
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -gdwarf-4")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gdwarf-4")
-set(CMAKE_HIP_FLAGS "${CMAKE_HIP_FLAGS} -gdwarf-4")
+# set(BOOST_ROOT /home/guo.chengxin/boost_1_82_0)
+# set(Boost_NO_SYSTEM_PATHS ON)
+
+# find_package(Boost COMPONENTS regex system REQUIRED)
+# include_directories(${Boost_INCLUDE_DIRS})
+
+# set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
+
+set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+
+add_compile_options(-march=native -mtune=native)
+
+
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# --- 构建选项定义 ---
-option(ALPHA_BUILD_CUDA "Compile kernels for NVIDIA GPUs" OFF)
-option(ALPHA_BUILD_HIP "Compile kernels for AMD or NVIDIA GPUs" ON)
-option(ALPHA_BUILD_HYGON "Compile kernels for Hygon CPUs" OFF)
-option(ALPHA_BUILD_ARM "Compile kernels for ARM CPUs" OFF)
-option(ALPHA_BUILD_PLAIN "Compile serial kernels for x86 CPUs (Reference Implementation)" OFF)
+option(ALPHA_BUILD_CUDA "Compile kernels for NVIDIA GPUs" ${ALPHA_HAS_CUDA})
+option(ALPHA_BUILD_HIP "Compile kernels for AMD or NVIDIA GPUs" ${ALPHA_HAS_HIP})
+option(ALPHA_BUILD_HYGON "Compile kernels for Hygon CPUs" ${ALPHA_HAS_HYGON})
+option(ALPHA_BUILD_ARM "Compile kernels for ARM CPUs" ${ALPHA_HAS_ARM})
+option(ALPHA_BUILD_REFERENCE "Compile serial kernels for x86 CPUs" ${ALPHA_HAS_REF})
 
-
-# ====================================================================
-# 【核心修改】条件化MKL依赖
-# 只有在构建 PLAIN 或 HYGON 版本时，才检查并引入MKL依赖
-# ====================================================================
-set(MKL_IS_REQUIRED OFF)
-if(ALPHA_BUILD_PLAIN OR ALPHA_BUILD_HYGON)
-    set(MKL_IS_REQUIRED ON)
-endif()
-
-if(MKL_IS_REQUIRED)
-    message(STATUS "MKL support is required for the current build configuration (PLAIN or HYGON).")
-    # 检查MKLROOT环境变量
-    if(NOT DEFINED ENV{MKLROOT})
-        message(FATAL_ERROR "MKLROOT environment variable is not set, but is required for PLAIN/HYGON builds. Please source the oneAPI setvars.sh script before running cmake.")
-    endif()
-
-    message(STATUS "Using MKL from MKLROOT: $ENV{MKLROOT}")
-
-    # 添加MKL的头文件和库路径
-    include_directories($ENV{MKLROOT}/include)
-    link_directories($ENV{MKLROOT}/lib/intel64)
-
-    # 统一添加__MKL__宏定义
-    add_definitions(-D__MKL__)
-else()
-    message(STATUS "MKL support is NOT required for the current build configuration.")
-endif()
-# ======================= 修改结束 ============================
-
-
-# --- 各后端构建逻辑 ---
 
 if(ALPHA_BUILD_CUDA)
+    # project("AlphaSparse" LANGUAGES CXX CUDA)
     enable_language(CUDA)
     find_package(CUDAToolkit)
     set (CUDA_ARCH 70)
-    add_subdirectory(cuda)
+    # add_definitions(-D__CUDA__)
+    add_subdirectory(cuda)    
     string(APPEND CMAKE_CUDA_FLAGS " -gencode=arch=compute_70,code=sm_70")
     string(APPEND CMAKE_CUDA_FLAGS "  -Xcompiler -Wall -fPIC -D_FORCE_INLINES --expt-extended-lambda -use_fast_math --expt-relaxed-constexpr")
     string(APPEND CMAKE_CUDA_FLAGS " -I/home/guochengxin/cusplibrary-cuda10")
 endif()
-
-if(ALPHA_BUILD_HIP)
-    set(HIP_CLANG_ROOT /opt/rocm) #change if needed
-    set(CMAKE_HIP_HOST_COMPILER ${HIP_CLANG_ROOT}/llvm/bin/clang++)
-    set(CMAKE_HIP_COMPILER ${HIP_CLANG_ROOT}/llvm/bin/clang++)
-    set(HIP_CLANG_INCLUDE_PATH  ${HIP_CLANG_ROOT}/llvm/lib/clang/15.0.0/lib)
+if(ALPHA_BUILD_HIP)    
     enable_language(HIP)
-    set (HIP_ARCH 70)    
+    set (HIP_ARCH 70)
+	# set(HIP_CLANG_INCLUDE_PATH /opt/dtk/llvm/lib/clang/15.0.0/lib) #change to the path on your system
+    set(HIP_CLANG_INCLUDE_PATH /public/software/compiler/dtk/dtk-23.10/llvm/lib/clang/15.0.0/lib)
+    # add_definitions(-D__HIP__)
     find_package(hip REQUIRED)
     find_package(hipsparse REQUIRED)
     find_package(rocprim REQUIRED)
     find_package(rccl REQUIRED)
     find_package(rocsparse REQUIRED)
+    include_directories(${HIP_INCLUDE_DIRS})
     add_subdirectory(hip)
 endif()
-
-if(ALPHA_BUILD_DCU)
+if(ALPHA_BUILD_DCU)    
     enable_language(HIP)
     find_package(HIP REQUIRED)
     include_directories(${HIP_INCLUDE_DIRS})
     set (HIP_ARCH 70)
+    # set(HIP_CLANG_INCLUDE_PATH /public/software/compiler/dtk/dtk-23.10/llvm/lib/clang/15.0.0/lib)
     set(CMAKE_CXX_COMPILER hipcc)
-    set(__HIP_PLATFORM_AMD__ 1)
+    # add_definitions(-D__DCU__)
+    set(__HIP_PLATFORM_AMD__ 1)      
     find_package(hipsparse REQUIRED)
     find_package(rocprim REQUIRED)
     find_package(rccl REQUIRED)
     find_package(rocsparse REQUIRED)
     add_subdirectory(dcu)
 endif()
-
-if(ALPHA_BUILD_HYGON)
-    # 【已修改】不再需要在这里添加 -D__MKL__，已移至顶部条件块
+if(ALPHA_BUILD_HYGON)    
+    message("ALPHA_BUILD_MKL_ENABLE : ${ALPHA_BUILD_MKL_ENABLE}")
+    if(ALPHA_BUILD_MKL_ENABLE OR ALPHA_BUILD_PLAIN)
+        add_definitions(-D__MKL__)  
+    endif()
     enable_language(C ASM)
     find_package(OpenMP REQUIRED)
-    Set(CMAKE_C_FLAGS "$CMAKE_C_FLAGS} -fopenmp")
-    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
-    Set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
+    # string(APPEND CMAKE_CXX_FLAGS " -std=c++17 ")   
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mavx -march=native") 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")    
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
     add_subdirectory(hygon)
 endif()
-
-if(ALPHA_BUILD_ARM)
+if(ALPHA_BUILD_ARM)    
+    # add_definitions(-D__ARM__)    
     enable_language(C ASM)
     find_package(OpenMP REQUIRED)
+    # string(APPEND CMAKE_CXX_FLAGS " -std=c++17 ")    
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
     add_subdirectory(arm)
 endif()
-
-if(ALPHA_BUILD_PLAIN)
-    # 【已修改】不再需要在这里添加 -D__MKL__，已移至顶部条件块
-    add_definitions(-D__PLAIN__)
+if(ALPHA_BUILD_PLAIN)    
+    add_definitions(-D__PLAIN__)    
+    add_definitions(-D__MKL__)  
     find_package(OpenMP REQUIRED)
+    # string(APPEND CMAKE_CXX_FLAGS " -std=c++17 ")    
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
     add_subdirectory(plain)
 endif()
 
-
-# --- 目标库的构建和链接 ---
 set(OBJECT_LIBS "")
 
 if(ALPHA_BUILD_CUDA)
@@ -145,17 +128,6 @@ endif()
 
 if(OBJECT_LIBS)
     add_library(alphasparse SHARED ${OBJECT_LIBS})
-    if(ALPHA_BUILD_HIP)
-        target_link_libraries(alphasparse PUBLIC
-            hip::host
-            roc::hipsparse
-            roc::rocprim
-            roc::rccl
-        )
-    endif()
-    target_include_directories(alphasparse PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    )
 else()
     message(WARNING "No source directories are selected for building. No library will be created.")
 endif()

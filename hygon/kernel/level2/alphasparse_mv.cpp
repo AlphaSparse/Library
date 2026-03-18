@@ -1210,7 +1210,215 @@ alphasparseStatus_t alphasparse_mv_template(
     else
         return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
   }
-  else {
+    else if (A->format == ALPHA_SPARSE_FORMAT_SELL_C_SIGMA) { 
+        if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_GENERAL) {
+        if (op_rq == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE) 
+                return gemv_sell_csigma(
+                    alpha,                             // α
+                    A->mat->rows,                      // m
+                    A->mat->cols,                      // n
+                    A->mat->pointers,                  // slice_ptr
+                    A->mat->col_data,                  // col_idx
+                    A->mat->block_max_nnz,
+                    (J*)A->mat->val_data,              // values
+                    (ALPHA_INT)A->mat->sell_C,         // C
+                    (ALPHA_INT)A->mat->sell_sigma,     // σ
+                    x,                                 // 输入向量
+                    beta,                              // β
+                    y,
+                    (ALPHA_INT*)A->mat->reorders);   
+        //     return gemv_csr(alpha, A->mat->rows, A->mat->cols, A->mat->row_data, A->mat->row_data + 1, A->mat->col_data, (J*)(A->mat->val_data), x, beta, y);
+        //   else if(op_rq == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+        //     return gemv_csr_trans(alpha, A->mat->rows, A->mat->cols, A->mat->row_data, A->mat->row_data + 1, A->mat->col_data,  (J*)(A->mat->val_data), x, beta, y);
+        //   else
+            // return gemv_csr_conj(alpha, A->mat->rows, A->mat->cols, A->mat->row_data, A->mat->row_data + 1, A->mat->col_data,  (J*)(A->mat->val_data), x, beta, y);
+        } else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_SYMMETRIC) {
+        if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+        {
+            //   if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return symv_csr_n_lo<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return symv_csr_n_hi<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return symv_csr_u_lo<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return symv_csr_u_hi<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        }
+        if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+        {
+            //   if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return symv_csr_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return symv_csr_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return symv_csr_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return symv_csr_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        }
+        else
+            return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+        } else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_HERMITIAN) {
+        if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+        {
+            //   if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return hermv_csr_n_lo<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return hermv_csr_n_hi<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return hermv_csr_u_lo<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return hermv_csr_u_hi<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        }
+        else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+        {
+            if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+            {
+                if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                    return hermv_csr_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+                else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                    return hermv_csr_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+                else
+                    return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            }
+            else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+            {
+                if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+                    return hermv_csr_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+                else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+                    return hermv_csr_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+                else
+                    return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            }
+            else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        }
+        else
+            return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+        }else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_TRIANGULAR) {
+        if(compute_operation == ALPHA_SPARSE_OPERATION_NON_TRANSPOSE)
+        {
+            //   if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return trmv_csr_n_lo<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return trmv_csr_n_hi<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return trmv_csr_u_lo<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return trmv_csr_u_hi<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        }
+        else if(compute_operation == ALPHA_SPARSE_OPERATION_TRANSPOSE)
+        {
+            //   if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return trmv_csr_n_lo_trans<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return trmv_csr_n_hi_trans<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+            //   {
+            //     if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+            //         return trmv_csr_u_lo_trans<J>(alpha, A->mat, x, beta, y);
+            //     else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+            //         return trmv_csr_u_hi_trans<J>(alpha, A->mat, x, beta, y);
+            //     else
+            //         return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+            //   }
+            //   else
+                return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        }
+        else if(compute_operation == ALPHA_SPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+        {
+        //       if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        //       {
+        //         if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+        //             return trmv_csr_n_lo_conj<J>(alpha, A->mat, x, beta, y);
+        //         else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+        //             return trmv_csr_n_hi_conj<J>(alpha, A->mat, x, beta, y);
+        //         else
+        //             return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        //       }
+        //       else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        //       {
+        //         if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_LOWER)
+        //             return trmv_csr_u_lo_conj<J>(alpha, A->mat, x, beta, y);
+        //         else if(dscr_rq.mode == ALPHA_SPARSE_FILL_MODE_UPPER)
+        //             return trmv_csr_u_hi_conj<J>(alpha, A->mat, x, beta, y);
+        //         else
+        //             return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        //       }
+        //       else
+        //           return ALPHA_SPARSE_STATUS_INVALID_VALUE;
+        //   }
+        //   else
+            return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+        } else if (compute_descr.type == ALPHA_SPARSE_MATRIX_TYPE_DIAGONAL) {
+        //   if(dscr_rq.diag == ALPHA_SPARSE_DIAG_NON_UNIT)
+        //     return diagmv_csr_n<J>(alpha, A->mat, x, beta, y);
+        //   else if(dscr_rq.diag == ALPHA_SPARSE_DIAG_UNIT)
+        //     return diagmv_csr_u<J>(alpha, A->mat, x, beta, y);
+        //   else
+            return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+        } else {
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+        }
+    }
+    else{
+        fprintf(stderr, "format not supported\n");
+        return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
+    }
+    }
+    else {
     fprintf(stderr, "format not supported\n");
     return ALPHA_SPARSE_STATUS_NOT_SUPPORTED;
   }
@@ -1235,6 +1443,6 @@ alphasparseStatus_t alphasparse_mv_template(
 
 C_IMPL(alphasparse_s_mv, float);
 C_IMPL(alphasparse_d_mv, double);
-C_IMPL(alphasparse_c_mv, ALPHA_Complex8);
-C_IMPL(alphasparse_z_mv, ALPHA_Complex16);
+// C_IMPL(alphasparse_c_mv, ALPHA_Complex8);
+// C_IMPL(alphasparse_z_mv, ALPHA_Complex16);
 #undef C_IMPL

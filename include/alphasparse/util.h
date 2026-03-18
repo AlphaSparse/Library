@@ -26,6 +26,7 @@
 
 #define CEIL(x,y) (((x)+((y)-1))/(y))
 
+#ifdef __CUDA__
 #define GPU_TIMER_START(elapsed_time, event_start, event_stop) \
   do                                                           \
   {                                                            \
@@ -68,4 +69,4 @@
       exit(-1);                                                      \
     }                                                                \
   }
-
+#endif

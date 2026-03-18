@@ -183,7 +183,8 @@ cuda_spsv()
                              vecY,
                              cuda_datatype,
                              cuda_alg,
-                             spsvDescr));
+                             spsvDescr,
+                             dBuffer));
         // hipDeviceSynchronize();
         GPU_TIMER_END(time_solve, event_start, event_stop);
         // printf("%.4lf\n", time_solve);
@@ -193,6 +194,9 @@ cuda_spsv()
         }
     }
     cuda_time_solve_avg = get_avg_time_2(times_solve);
+    // cuda_bandwidth = static_cast<double>(sizeof(float)) * (2 * m + nnz) +
+    //                  sizeof(int) * (m + 1 + nnz) / cuda_time_solve_avg / 1e6;
+    // cuda_gflops = static_cast<double>(2 * nnz) / cuda_time_solve_avg / 1e6;
 
     CHECK_CUDA(hipMemcpy(cuda_y, dY, sizeof(DATA_TYPE) * m, hipMemcpyDeviceToHost));
 
@@ -383,10 +387,10 @@ int main(int argc, const char *argv[])
         // printf("%s - the row number and the column number are NOT equal!\n", file);
         return 0;
     }
-    // if (nnz < 1e+6)
-    // {
-    //     return 0;
-    // }
+    if (nnz < 1e+6)
+    {
+        return 0;
+    }
 
     coo_order<int32_t, DATA_TYPE>(nnz, coo_row_index, coo_col_index, coo_values);
 

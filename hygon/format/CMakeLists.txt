@@ -9,6 +9,7 @@ set(alphasparse_format
   format/alphasparse_convert_bsr.cpp
   format/alphasparse_convert_sky.cpp
   format/alphasparse_convert_ell.cpp
+  format/alphasparse_convert_sell_csigma.cpp
   format/alphasparse_destroy.cpp
   format/alphasparse_transpose.cpp
   format/alphasparse_export_csr.cpp

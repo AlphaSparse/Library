@@ -300,7 +300,7 @@ alpha_spsm() {
 
 int 
 main(int argc, const char* argv[]) {
-    args_help_hip_hip(argc, argv);
+    args_help_hip(argc, argv);
     file = args_get_data_file(argc, argv);
     metrics_file = args_save_metrics_file(argc, argv);
     check_flag = args_get_if_check(argc, argv);

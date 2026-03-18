@@ -35,11 +35,15 @@ float cuda_time_bufferSize;
 float cuda_time_analysis;
 float cuda_time_solve_avg;
 double cuda_time_total;
+// double cuda_bandwidth;
+// double cuda_gflops;
 
 float alpha_time_bufferSize;
 float alpha_time_analysis;
 float alpha_time_solve_avg;
 double alpha_time_total;
+// double alpha_bandwidth;
+// double alpha_gflops;
 
 double speedup;
 
@@ -183,7 +187,8 @@ cuda_spsv()
                              vecY,
                              cuda_datatype,
                              cuda_alg,
-                             spsvDescr));
+                             spsvDescr,
+                             dBuffer));
         // hipDeviceSynchronize();
         GPU_TIMER_END(time_solve, event_start, event_stop);
         // printf("%.4lf\n", time_solve);
@@ -193,6 +198,9 @@ cuda_spsv()
         }
     }
     cuda_time_solve_avg = get_avg_time_2(times_solve);
+    // cuda_bandwidth = static_cast<double>(sizeof(double)) * (2 * m + nnz) +
+    //                  sizeof(int) * (m + 1 + nnz) / cuda_time_solve_avg / 1e6;
+    // cuda_gflops = static_cast<double>(2 * nnz) / cuda_time_solve_avg / 1e6;
 
     CHECK_CUDA(hipMemcpy(cuda_y, dY, sizeof(DATA_TYPE) * m, hipMemcpyDeviceToHost));
 

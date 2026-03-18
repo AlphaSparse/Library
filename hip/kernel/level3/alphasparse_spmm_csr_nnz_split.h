@@ -7,7 +7,6 @@
 template<int block_size,
          typename T>
 static __global__ void
-__launch_bounds__(512)
 elebalance_partition_kernel(
   T M, T nnz, T items_per_seg,
   const T* __restrict__ csr_row_ptr,

@@ -762,15 +762,15 @@ spsv_csr_n_lo_tri_cublk_solve(
 	// constexpr unsigned int cu_num = 64;
 	// constexpr unsigned int cu_num = 128;
 	// constexpr unsigned int cu_num = 256;
-	constexpr unsigned int cu_num = 256;
+	constexpr unsigned int cu_num = 512;
 	const unsigned int BLOCKSIZE = 256;
 	dim3 threadPerBlock(BLOCKSIZE);
-	dim3 blockPerGrid(max(cu_num, (m - 1) / (BLOCKSIZE / VECSIZE) + 1));
+	dim3 blockPerGrid(min(cu_num, (m - 1) / (BLOCKSIZE / VECSIZE) + 1));
 	// dim3 blockPerGrid(cu_num);
 	bool* get_value = reinterpret_cast<bool*>(externalBuffer);
 	hipMemset(get_value, 0, m * sizeof(bool));
 	//KERNEL_DISPATCH(BLOCKSIZE, 16);
-	// printf("blockPerGrid %d\n", blockPerGrid);
+	
 	T* id_extractor = reinterpret_cast<T*>(reinterpret_cast<char*>(get_value) + sizeof(T) * m);
 	hipMemset(id_extractor, 0, sizeof(T));
 	/*

@@ -133,9 +133,15 @@ alpha_abs(const cuDoubleComplex& z)
   double real = alpha_abs(z.x);
   double imag = alpha_abs(z.y);
 
-  return real > imag ? (imag /= real, real * alpha_sqrt(imag * imag + 1))
-          : imag      ? (real /= imag, imag * alpha_sqrt(real * real + 1))
-                      : 0;
+  // return real > imag ? (imag /= real, real * alpha_sqrt(imag * imag + 1))
+  //         : imag      ? (real /= imag, imag * alpha_sqrt(real * real + 1))
+  //                     : 0;
+  if(real > imag)
+    return (imag /= real, real * alpha_sqrt(imag * imag + 1));
+  else if(imag)
+      return (real /= imag, imag * alpha_sqrt(real * real + 1));
+    else 
+      return 0;
   // // cuDoubleComplex r = make_cuDoubleComplex(sqrt(z.x * z.x + z.y * z.y), 0.0f);//rocSPARSE style
   // // cuDoubleComplex r = make_cuDoubleComplex(sqrt(z.x * z.x), 0.0f);//cuSPARSE style
   // cuDoubleComplex r = make_cuDoubleComplex(fabs(z.x), 0.0);//cuSPARSE style

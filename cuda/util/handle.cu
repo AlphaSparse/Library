@@ -110,10 +110,10 @@ alphasparseGetHandle(alphasparseHandle_t* handle)
   // Device one
   THROW_IF_CUDA_ERROR(cudaMalloc((void**)&((*handle)->sone), sizeof(float)));
   THROW_IF_CUDA_ERROR(cudaMalloc((void**)&((*handle)->done), sizeof(double)));
-  THROW_IF_CUDA_ERROR(
-    cudaMalloc((void**)&((*handle)->cone), sizeof(cuFloatComplex)));
-  THROW_IF_CUDA_ERROR(
-    cudaMalloc((void**)&((*handle)->zone), sizeof(cuDoubleComplex)));
+  // THROW_IF_CUDA_ERROR(
+  //   cudaMalloc((void**)&((*handle)->cone), sizeof(cuFloatComplex)));
+  // THROW_IF_CUDA_ERROR(
+  //   cudaMalloc((void**)&((*handle)->zone), sizeof(cuDoubleComplex)));
   // Execute empty kernel for initialization
   init_kernel<<<dim3(1), dim3(1), 0, (*handle)->stream>>>();
   // Execute memset for initialization
@@ -121,10 +121,10 @@ alphasparseGetHandle(alphasparseHandle_t* handle)
     cudaMemsetAsync((*handle)->sone, 0, sizeof(float), (*handle)->stream));
   THROW_IF_CUDA_ERROR(
     cudaMemsetAsync((*handle)->done, 0, sizeof(double), (*handle)->stream));
-  THROW_IF_CUDA_ERROR(cudaMemsetAsync(
-    (*handle)->cone, 0, sizeof(cuFloatComplex), (*handle)->stream));
-  THROW_IF_CUDA_ERROR(cudaMemsetAsync(
-    (*handle)->zone, 0, sizeof(cuDoubleComplex), (*handle)->stream));
+  // THROW_IF_CUDA_ERROR(cudaMemsetAsync(
+  //   (*handle)->cone, 0, sizeof(cuFloatComplex), (*handle)->stream));
+  // THROW_IF_CUDA_ERROR(cudaMemsetAsync(
+  //   (*handle)->zone, 0, sizeof(cuDoubleComplex), (*handle)->stream));
   float hsone = 1.0f;
   double hdone = 1.0;
 
@@ -140,16 +140,16 @@ alphasparseGetHandle(alphasparseHandle_t* handle)
                                       sizeof(double),
                                       cudaMemcpyHostToDevice,
                                       (*handle)->stream));
-  THROW_IF_CUDA_ERROR(cudaMemcpyAsync((*handle)->cone,
-                                      &hcone,
-                                      sizeof(cuFloatComplex),
-                                      cudaMemcpyHostToDevice,
-                                      (*handle)->stream));
-  THROW_IF_CUDA_ERROR(cudaMemcpyAsync((*handle)->zone,
-                                      &hzone,
-                                      sizeof(cuDoubleComplex),
-                                      cudaMemcpyHostToDevice,
-                                      (*handle)->stream));
+  // THROW_IF_CUDA_ERROR(cudaMemcpyAsync((*handle)->cone,
+  //                                     &hcone,
+  //                                     sizeof(cuFloatComplex),
+  //                                     cudaMemcpyHostToDevice,
+  //                                     (*handle)->stream));
+  // THROW_IF_CUDA_ERROR(cudaMemcpyAsync((*handle)->zone,
+  //                                     &hzone,
+  //                                     sizeof(cuDoubleComplex),
+  //                                     cudaMemcpyHostToDevice,
+  //                                     (*handle)->stream));
   // Wait for device transfer to finish
   THROW_IF_CUDA_ERROR(cudaStreamSynchronize((*handle)->stream));
   return ALPHA_SPARSE_STATUS_SUCCESS;
@@ -164,8 +164,8 @@ alphasparse_destory_handle(alphasparseHandle_t handle)
   PRINT_IF_CUDA_ERROR(cudaFree(handle->buffer));
   PRINT_IF_CUDA_ERROR(cudaFree(handle->sone));
   PRINT_IF_CUDA_ERROR(cudaFree(handle->done));
-  PRINT_IF_CUDA_ERROR(cudaFree(handle->cone));
-  PRINT_IF_CUDA_ERROR(cudaFree(handle->zone));
+  // PRINT_IF_CUDA_ERROR(cudaFree(handle->cone));
+  // PRINT_IF_CUDA_ERROR(cudaFree(handle->zone));
   for (int i = 0; i < 6; i++) {
       cudaStreamDestroy(handle->streams[i]);
   }

@@ -2,7 +2,7 @@
 // #define _GNU_SOURCE
 #include <memory.h>
 #include <sched.h>
-
+#include <iostream> 
 #include "alphasparse/util.h"
 #include "csrmv/csrmv_kernel.h"
 #include "alphasparse/opt.h"
@@ -21,24 +21,18 @@ alphasparseStatus_t gemv_csr(const float alpha, const I m, const I n,
   W num_threads = alpha_get_thread_num();
   W partition[num_threads + 1];
   balanced_partition_row_by_nnz(rows_end, m, num_threads, partition);
-
 #ifdef _OPENMP
 #pragma omp parallel num_threads(num_threads)
 #endif
   {
     const I tid = alpha_get_thread_id();
-
     W local_m_s = partition[tid];
     W local_m_e = partition[tid + 1];
     W Rows = local_m_e - local_m_s;
-
+    // std::cout<<local_m_s<<" "<<local_m_e<<std::endl;
     const W *rows_start = &rows_ptr[local_m_s];
     float *y_local = &y[local_m_s];
 
-      //   __spmv_csr_serial_host_plain_float(alpha, beta, Rows, rows_start, A->col_indx,A->values, x, y_local);
-    //   csrmv_vgather_hadd_float_128(alpha, beta, Rows, rows_start, A->col_indx,A->values, x, y_local);
-    //   __spmv_csr_serial_host_gather4_float(alpha, beta, Rows, rows_start, A->col_indx,A->values, x, y_local);
-    //   csrmv_sload_shuffle_hadd_float_128(alpha, beta, Rows, rows_start, A->col_indx,A->values, x, y_local);
     __spmv_csr_serial_host_sse_float(static_cast<const float>(alpha), (const float)beta, Rows, rows_start, col_indx, (float*)values, (float*)x, (float*)y_local);
   }
 
@@ -55,13 +49,11 @@ alphasparseStatus_t gemv_csr(const double alpha, const I m, const I n,
   W num_threads = alpha_get_thread_num();
   W partition[num_threads + 1];
   balanced_partition_row_by_nnz(rows_end, m, num_threads, partition);
-
 #ifdef _OPENMP
 #pragma omp parallel num_threads(num_threads)
 #endif
   {
     const I tid = alpha_get_thread_id();
-
     W local_m_s = partition[tid];
     W local_m_e = partition[tid + 1];
     W Rows = local_m_e - local_m_s;

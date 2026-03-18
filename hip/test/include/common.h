@@ -17,7 +17,7 @@ std::map<hipsparseSpSMAlg_t, std::string> cuda_spsm_alg_map {
 
 std::map<alphasparseSpSVAlg_t, std::string> alpha_spsv_alg_map {
     {ALPHA_SPARSE_SPSV_ALG_DEFAULT, "ALPHA_SPARSE_SPSV_ALG_DEFAULT"},
-    {ALPHA_SPARSE_SPSV_CSR_ALG1, "ALPHA_SPARSE_SPSV_CSR_ALG1"},
+    {ALPHA_SPARSE_SPSV_ALG_CSR_CW, "ALPHA_SPARSE_SPSV_ALG_CSR_CW"},
 };
 std::map<alphasparseSpMVAlg_t, std::string> alpha_spmv_alg_map {
     {ALPHA_SPARSE_SPMV_ALG_VECTOR, "ALPHA_SPARSE_SPMV_ALG_VECTOR"},
@@ -135,17 +135,9 @@ alphasparseSpSVAlg_t get_alpha_spsv_alg(int alg_num) {
       break;
     }
     case 1: {
-      alpha_alg = ALPHA_SPARSE_SPSV_CSR_ALG1;
+      alpha_alg = ALPHA_SPARSE_SPSV_ALG_CSR_CW;
       break;
     }
-    case 2: {
-      alpha_alg = ALPHA_SPARSE_SPSV_CSR_ALG2;
-      break;
-    }
-	case 3: {
-	  alpha_alg = ALPHA_SPARSE_SPSV_CSR_ALG3;
-	  break;
-	}
     default: {
       break;
     }

@@ -53,15 +53,17 @@ get_alphasparse_status_for_hip_status(hipError_t status)
 alphasparseStatus_t
 initHandle(alphasparseHandle_t* handle)
 {
-    *handle = new alphasparse_handle;
-    (*handle)->stream = 0;
-    for (int i = 0; i < 6; i++) {
-        hipStreamCreate(&(*handle)->streams[i]);
-    }
-    (*handle)->pointer_mode = ALPHA_SPARSE_POINTER_MODE_HOST;
-    (*handle)->check_flag = false;
+  *handle = (alphasparseHandle_t)alpha_malloc(sizeof(alphasparse_handle));
+  (*handle)->stream = 0;
+  for (int i = 0; i < 6; i++) {
+      hipStreamCreate(&(*handle)->streams[i]);
+  }
+  (*handle)->pointer_mode = ALPHA_SPARSE_POINTER_MODE_HOST;
 
-    return ALPHA_SPARSE_STATUS_SUCCESS;
+  (*handle)->check_flag = false;
+  (*handle)->process = nullptr;
+
+  return ALPHA_SPARSE_STATUS_SUCCESS;
 }
 
 alphasparseStatus_t

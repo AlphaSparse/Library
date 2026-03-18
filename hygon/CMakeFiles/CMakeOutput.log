@@ -1,0 +1,695 @@
+The system is: Linux - 3.10.0-957.el7.x86_64 - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/rh/devtoolset-7/root/usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/3.24.4/CompilerIdCXX/a.out"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/rh/devtoolset-7/root/usr/bin/cc 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/3.24.4/CompilerIdC/a.out"
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/opt/rh/devtoolset-7/root/usr/bin/gmake -f Makefile cmTC_a56a2/fast && /opt/rh/devtoolset-7/root/usr/bin/gmake  -f CMakeFiles/cmTC_a56a2.dir/build.make CMakeFiles/cmTC_a56a2.dir/build
+gmake[1]: Entering directory '/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o
+/opt/rh/devtoolset-7/root/usr/bin/c++   -v -o CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -c /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCXXCompilerABI.cpp
+Using built-in specs.
+COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/c++
+Target: x86_64-redhat-linux
+Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
+Thread model: posix
+gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/cc1plus -quiet -v -D_GNU_SOURCE /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/cclEMmvy.s
+GNU C++14 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)
+	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5), GMP version 6.0.0, MPFR version 3.1.1, MPC version 1.0.1, isl version isl-0.16.1-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"
+ignoring duplicate directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7"
+ignoring duplicate directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7/x86_64-redhat-linux"
+ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include-fixed"
+ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../x86_64-redhat-linux/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include
+ /public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include
+ /public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include
+ /public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include
+ /public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include
+ /public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include
+ /public/home/ictapp_w/intel/oneapi/dpl/2022.3/include
+ /public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include
+ /public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include
+ /public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include
+ /public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include
+ /public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include
+ /public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp
+ /opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include
+ /opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include
+ /opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include
+ /opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include
+ /public/software/compiler/dtk/dtk-23.10.1/include
+ /public/software/compiler/dtk/dtk-23.10.1/llvm/include
+ /public/software/compiler/dtk/dtk-22.10.1/include
+ /opt/rh/devtoolset-7/root/usr/include/c++/7
+ /opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux
+ /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7/backward
+ /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include
+ /usr/local/include
+ /opt/rh/devtoolset-7/root/usr/include
+ /usr/include
+End of search list.
+GNU C++14 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)
+	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5), GMP version 6.0.0, MPFR version 3.1.1, MPC version 1.0.1, isl version isl-0.16.1-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 2f06f4cd9d92155a269283acf1f10eb6
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/as -v --64 -o CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o /tmp/cclEMmvy.s
+GNU assembler version 2.28 (x86_64-redhat-linux) using BFD version version 2.28-11.el7
+COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/
+LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+Linking CXX executable cmTC_a56a2
+/public/home/ictapp_w/cmake-3.24.4-linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a56a2.dir/link.txt --verbose=1
+/opt/rh/devtoolset-7/root/usr/bin/c++ -Wl,-rpath=/opt/rh/devtoolset-7/root/usr/lib64 -Wl,-rpath=/opt/rh/devtoolset-7/root/usr/lib -v CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_a56a2 
+Using built-in specs.
+COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/c++
+COLLECT_LTO_WRAPPER=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper
+Target: x86_64-redhat-linux
+Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
+Thread model: posix
+gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) 
+COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/
+LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a56a2' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/collect2 -plugin /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/liblto_plugin.so -plugin-opt=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccw9dOTG.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_a56a2 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7 -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib -L/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8 -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib -L/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib -L/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib -L/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib -L/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp -L/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../.. -rpath=/opt/rh/devtoolset-7/root/usr/lib64 -rpath=/opt/rh/devtoolset-7/root/usr/lib CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o /lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a56a2' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+gmake[1]: Leaving directory '/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include]
+    add: [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include]
+    add: [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include]
+    add: [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include]
+    add: [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include]
+    add: [/public/software/compiler/dtk/dtk-23.10.1/include]
+    add: [/public/software/compiler/dtk/dtk-23.10.1/llvm/include]
+    add: [/public/software/compiler/dtk/dtk-22.10.1/include]
+    add: [/opt/rh/devtoolset-7/root/usr/include/c++/7]
+    add: [/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux]
+    add: [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7/backward]
+    add: [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include]
+    add: [/usr/local/include]
+    add: [/opt/rh/devtoolset-7/root/usr/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include] ==> [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include] ==> [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include] ==> [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include] ==> [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include] ==> [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include] ==> [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include] ==> [/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include] ==> [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include] ==> [/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include] ==> [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include] ==> [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp] ==> [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include]
+  collapse include dir [/public/software/compiler/dtk/dtk-23.10.1/include] ==> [/public/software/compiler/dtk/dtk-23.10.1/include]
+  collapse include dir [/public/software/compiler/dtk/dtk-23.10.1/llvm/include] ==> [/public/software/compiler/dtk/dtk-23.10.1/llvm/include]
+  collapse include dir [/public/software/compiler/dtk/dtk-22.10.1/include] ==> [/public/software/compiler/dtk/dtk-22.10.1/include]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/include/c++/7] ==> [/opt/rh/devtoolset-7/root/usr/include/c++/7]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux] ==> [/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7/backward] ==> [/opt/rh/devtoolset-7/root/usr/include/c++/7/backward]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include] ==> [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/include] ==> [/opt/rh/devtoolset-7/root/usr/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include;/public/home/ictapp_w/intel/oneapi/tbb/2021.11/include;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/include;/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include;/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include;/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include;/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include;/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include;/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include;/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include;/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include;/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include;/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp;/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include;/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include;/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include;/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include;/public/software/compiler/dtk/dtk-23.10.1/include;/public/software/compiler/dtk/dtk-23.10.1/llvm/include;/public/software/compiler/dtk/dtk-22.10.1/include;/opt/rh/devtoolset-7/root/usr/include/c++/7;/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux;/opt/rh/devtoolset-7/root/usr/include/c++/7/backward;/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include;/usr/local/include;/opt/rh/devtoolset-7/root/usr/include;/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/opt/rh/devtoolset-7/root/usr/bin/gmake -f Makefile cmTC_a56a2/fast && /opt/rh/devtoolset-7/root/usr/bin/gmake  -f CMakeFiles/cmTC_a56a2.dir/build.make CMakeFiles/cmTC_a56a2.dir/build]
+  ignore line: [gmake[1]: Entering directory '/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/opt/rh/devtoolset-7/root/usr/bin/c++   -v -o CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -c /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/c++]
+  ignore line: [Target: x86_64-redhat-linux]
+  ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/cc1plus -quiet -v -D_GNU_SOURCE /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/cclEMmvy.s]
+  ignore line: [GNU C++14 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)]
+  ignore line: [	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5)  GMP version 6.0.0  MPFR version 3.1.1  MPC version 1.0.1  isl version isl-0.16.1-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"]
+  ignore line: [ignoring duplicate directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7"]
+  ignore line: [ignoring duplicate directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7/x86_64-redhat-linux"]
+  ignore line: [ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include-fixed"]
+  ignore line: [ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../x86_64-redhat-linux/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dpl/2022.3/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include]
+  ignore line: [ /public/software/compiler/dtk/dtk-23.10.1/include]
+  ignore line: [ /public/software/compiler/dtk/dtk-23.10.1/llvm/include]
+  ignore line: [ /public/software/compiler/dtk/dtk-22.10.1/include]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/include/c++/7]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7/backward]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/include]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C++14 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)]
+  ignore line: [	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5)  GMP version 6.0.0  MPFR version 3.1.1  MPC version 1.0.1  isl version isl-0.16.1-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 2f06f4cd9d92155a269283acf1f10eb6]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/as -v --64 -o CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o /tmp/cclEMmvy.s]
+  ignore line: [GNU assembler version 2.28 (x86_64-redhat-linux) using BFD version version 2.28-11.el7]
+  ignore line: [COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/]
+  ignore line: [LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking CXX executable cmTC_a56a2]
+  ignore line: [/public/home/ictapp_w/cmake-3.24.4-linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a56a2.dir/link.txt --verbose=1]
+  ignore line: [/opt/rh/devtoolset-7/root/usr/bin/c++ -Wl -rpath=/opt/rh/devtoolset-7/root/usr/lib64 -Wl -rpath=/opt/rh/devtoolset-7/root/usr/lib -v CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_a56a2 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/c++]
+  ignore line: [COLLECT_LTO_WRAPPER=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper]
+  ignore line: [Target: x86_64-redhat-linux]
+  ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) ]
+  ignore line: [COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/]
+  ignore line: [LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a56a2' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/collect2 -plugin /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/liblto_plugin.so -plugin-opt=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccw9dOTG.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_a56a2 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7 -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib -L/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8 -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib -L/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib -L/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib -L/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib -L/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp -L/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../.. -rpath=/opt/rh/devtoolset-7/root/usr/lib64 -rpath=/opt/rh/devtoolset-7/root/usr/lib CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o /lib/../lib64/crtn.o]
+    arg [/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccw9dOTG.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--no-add-needed] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_a56a2] ==> ignore
+    arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+    arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+    arg [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o] ==> obj [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o]
+    arg [-L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7] ==> dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7]
+    arg [-L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64] ==> dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8] ==> dir [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release] ==> dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib] ==> dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp] ==> dir [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib]
+    arg [-L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../..] ==> dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../..]
+    arg [-rpath=/opt/rh/devtoolset-7/root/usr/lib64] ==> ignore
+    arg [-rpath=/opt/rh/devtoolset-7/root/usr/lib] ==> ignore
+    arg [CMakeFiles/cmTC_a56a2.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o] ==> obj [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o]
+    arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+  collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+  collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+  collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+  collapse library dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7] ==> [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7]
+  collapse library dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64] ==> [/opt/rh/devtoolset-7/root/usr/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib] ==> [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8] ==> [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/lib/intel64/gcc4.8]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/libfabric/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib/release]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib] ==> [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib] ==> [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib] ==> [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp] ==> [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib]
+  collapse library dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../..] ==> [/opt/rh/devtoolset-7/root/usr/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit objs: [/lib64/crt1.o;/lib64/crti.o;/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o;/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o;/lib64/crtn.o]
+  implicit dirs: [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7;/opt/rh/devtoolset-7/root/usr/lib64;/lib64;/usr/lib64;/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib;/public/home/ictapp_w/intel/oneapi/tbb/2021.11/lib/intel64/gcc4.8;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/libfabric/lib;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib/release;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib;/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib;/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib;/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib;/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp;/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib;/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib;/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib;/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib;/opt/rh/devtoolset-7/root/usr/lib]
+  implicit fwks: []
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/opt/rh/devtoolset-7/root/usr/bin/gmake -f Makefile cmTC_ab2f6/fast && /opt/rh/devtoolset-7/root/usr/bin/gmake  -f CMakeFiles/cmTC_ab2f6.dir/build.make CMakeFiles/cmTC_ab2f6.dir/build
+gmake[1]: Entering directory '/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o
+/opt/rh/devtoolset-7/root/usr/bin/cc   -v -o CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -c /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/cc
+Target: x86_64-redhat-linux
+Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
+Thread model: posix
+gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/cc1 -quiet -v /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -version -o /tmp/ccZaFL1y.s
+GNU C11 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)
+	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5), GMP version 6.0.0, MPFR version 3.1.1, MPC version 1.0.1, isl version isl-0.16.1-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"
+ignoring duplicate directory "/opt/hpc/software/mpi/pmix/include"
+ignoring duplicate directory "/opt/gridview/ucx/include"
+ignoring duplicate directory "/opt/gridview/slurm/include"
+ignoring duplicate directory "/opt/gridview/munge/include"
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"
+ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"
+ignoring duplicate directory "/opt/hpc/software/mpi/pmix/include"
+ignoring duplicate directory "/opt/gridview/ucx/include"
+ignoring duplicate directory "/opt/gridview/slurm/include"
+ignoring duplicate directory "/opt/gridview/munge/include"
+ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include-fixed"
+ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../x86_64-redhat-linux/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include
+ /public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include
+ /public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include
+ /public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include
+ /public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include
+ /public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include
+ /public/home/ictapp_w/intel/oneapi/dpl/2022.3/include
+ /public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include
+ /public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include
+ /public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include
+ /public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include
+ /public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include
+ /public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp
+ /opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include
+ /opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include
+ /opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include
+ /opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include
+ /public/software/compiler/dtk/dtk-23.10.1/include
+ /public/software/compiler/dtk/dtk-23.10.1/llvm/include
+ /opt/hpc/software/mpi/pmix/include
+ /opt/gridview/ucx/include
+ /opt/gridview/slurm/include
+ /opt/gridview/munge/include
+ /public/software/compiler/dtk/dtk-22.10.1/include
+ /opt/rh/devtoolset-7/root/usr/include/c++/7
+ /opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux
+ .
+ /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include
+ /usr/local/include
+ /opt/rh/devtoolset-7/root/usr/include
+ /usr/include
+End of search list.
+GNU C11 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)
+	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5), GMP version 6.0.0, MPFR version 3.1.1, MPC version 1.0.1, isl version isl-0.16.1-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 9297c6e7ca8f6c9f2474dcdc9331bbe8
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/as -v --64 -o CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o /tmp/ccZaFL1y.s
+GNU assembler version 2.28 (x86_64-redhat-linux) using BFD version version 2.28-11.el7
+COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/
+LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+Linking C executable cmTC_ab2f6
+/public/home/ictapp_w/cmake-3.24.4-linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ab2f6.dir/link.txt --verbose=1
+/opt/rh/devtoolset-7/root/usr/bin/cc -Wl,-rpath=/opt/rh/devtoolset-7/root/usr/lib64 -Wl,-rpath=/opt/rh/devtoolset-7/root/usr/lib -v CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -o cmTC_ab2f6 
+Using built-in specs.
+COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/cc
+COLLECT_LTO_WRAPPER=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper
+Target: x86_64-redhat-linux
+Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
+Thread model: posix
+gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) 
+COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/
+LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_ab2f6' '-mtune=generic' '-march=x86-64'
+ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/collect2 -plugin /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/liblto_plugin.so -plugin-opt=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper -plugin-opt=-fresolution=/tmp/cc2BqbBC.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_ab2f6 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7 -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib -L/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8 -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib -L/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib -L/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib -L/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib -L/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp -L/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../.. -rpath=/opt/rh/devtoolset-7/root/usr/lib64 -rpath=/opt/rh/devtoolset-7/root/usr/lib CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o /lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_ab2f6' '-mtune=generic' '-march=x86-64'
+gmake[1]: Leaving directory '/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp'
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include]
+    add: [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include]
+    add: [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include]
+    add: [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include]
+    add: [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include]
+    add: [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include]
+    add: [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include]
+    add: [/public/software/compiler/dtk/dtk-23.10.1/include]
+    add: [/public/software/compiler/dtk/dtk-23.10.1/llvm/include]
+    add: [/opt/hpc/software/mpi/pmix/include]
+    add: [/opt/gridview/ucx/include]
+    add: [/opt/gridview/slurm/include]
+    add: [/opt/gridview/munge/include]
+    add: [/public/software/compiler/dtk/dtk-22.10.1/include]
+    add: [/opt/rh/devtoolset-7/root/usr/include/c++/7]
+    add: [/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux]
+    add: [.]
+    add: [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include]
+    add: [/usr/local/include]
+    add: [/opt/rh/devtoolset-7/root/usr/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include] ==> [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include] ==> [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include] ==> [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include] ==> [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include] ==> [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include] ==> [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include] ==> [/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include] ==> [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include] ==> [/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include] ==> [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include] ==> [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include]
+  collapse include dir [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp] ==> [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include]
+  collapse include dir [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include]
+  collapse include dir [/public/software/compiler/dtk/dtk-23.10.1/include] ==> [/public/software/compiler/dtk/dtk-23.10.1/include]
+  collapse include dir [/public/software/compiler/dtk/dtk-23.10.1/llvm/include] ==> [/public/software/compiler/dtk/dtk-23.10.1/llvm/include]
+  collapse include dir [/opt/hpc/software/mpi/pmix/include] ==> [/opt/hpc/software/mpi/pmix/include]
+  collapse include dir [/opt/gridview/ucx/include] ==> [/opt/gridview/ucx/include]
+  collapse include dir [/opt/gridview/slurm/include] ==> [/opt/gridview/slurm/include]
+  collapse include dir [/opt/gridview/munge/include] ==> [/opt/gridview/munge/include]
+  collapse include dir [/public/software/compiler/dtk/dtk-22.10.1/include] ==> [/public/software/compiler/dtk/dtk-22.10.1/include]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/include/c++/7] ==> [/opt/rh/devtoolset-7/root/usr/include/c++/7]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux] ==> [/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux]
+  skipping relative include dir [.]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include] ==> [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/opt/rh/devtoolset-7/root/usr/include] ==> [/opt/rh/devtoolset-7/root/usr/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include;/public/home/ictapp_w/intel/oneapi/tbb/2021.11/include;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/include;/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include;/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include;/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include;/public/home/ictapp_w/intel/oneapi/dpl/2022.3/include;/public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include;/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include;/public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include;/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include;/public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include;/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp;/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include;/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include;/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include;/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include;/public/software/compiler/dtk/dtk-23.10.1/include;/public/software/compiler/dtk/dtk-23.10.1/llvm/include;/opt/hpc/software/mpi/pmix/include;/opt/gridview/ucx/include;/opt/gridview/slurm/include;/opt/gridview/munge/include;/public/software/compiler/dtk/dtk-22.10.1/include;/opt/rh/devtoolset-7/root/usr/include/c++/7;/opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux;/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include;/usr/local/include;/opt/rh/devtoolset-7/root/usr/include;/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/opt/rh/devtoolset-7/root/usr/bin/gmake -f Makefile cmTC_ab2f6/fast && /opt/rh/devtoolset-7/root/usr/bin/gmake  -f CMakeFiles/cmTC_ab2f6.dir/build.make CMakeFiles/cmTC_ab2f6.dir/build]
+  ignore line: [gmake[1]: Entering directory '/work1/ictapp_w/zk/alphasparse/alphasparse_allinone/hygon/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/opt/rh/devtoolset-7/root/usr/bin/cc   -v -o CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -c /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCCompilerABI.c]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/cc]
+  ignore line: [Target: x86_64-redhat-linux]
+  ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/cc1 -quiet -v /public/home/ictapp_w/cmake-3.24.4-linux-x86_64/share/cmake-3.24/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -version -o /tmp/ccZaFL1y.s]
+  ignore line: [GNU C11 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)]
+  ignore line: [	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5)  GMP version 6.0.0  MPFR version 3.1.1  MPC version 1.0.1  isl version isl-0.16.1-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"]
+  ignore line: [ignoring duplicate directory "/opt/hpc/software/mpi/pmix/include"]
+  ignore line: [ignoring duplicate directory "/opt/gridview/ucx/include"]
+  ignore line: [ignoring duplicate directory "/opt/gridview/slurm/include"]
+  ignore line: [ignoring duplicate directory "/opt/gridview/munge/include"]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/include"]
+  ignore line: [ignoring duplicate directory "/public/software/compiler/dtk/dtk-23.10.1/llvm/include"]
+  ignore line: [ignoring duplicate directory "/opt/hpc/software/mpi/pmix/include"]
+  ignore line: [ignoring duplicate directory "/opt/gridview/ucx/include"]
+  ignore line: [ignoring duplicate directory "/opt/gridview/slurm/include"]
+  ignore line: [ignoring duplicate directory "/opt/gridview/munge/include"]
+  ignore line: [ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include-fixed"]
+  ignore line: [ignoring nonexistent directory "/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../x86_64-redhat-linux/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dpl/2022.3/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dpcpp-ct/2023.1.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dev-utilities/2024.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/dal/2023.1.0/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/compiler/2024.0/opt/oclfpga/include]
+  ignore line: [ /public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/include/cpu_gpu_dpcpp]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/include]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/include]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/sharp/include]
+  ignore line: [ /opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/include]
+  ignore line: [ /public/software/compiler/dtk/dtk-23.10.1/include]
+  ignore line: [ /public/software/compiler/dtk/dtk-23.10.1/llvm/include]
+  ignore line: [ /opt/hpc/software/mpi/pmix/include]
+  ignore line: [ /opt/gridview/ucx/include]
+  ignore line: [ /opt/gridview/slurm/include]
+  ignore line: [ /opt/gridview/munge/include]
+  ignore line: [ /public/software/compiler/dtk/dtk-22.10.1/include]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/include/c++/7]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/include/c++/7/x86_64-redhat-linux]
+  ignore line: [ .]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/include]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C11 (GCC) version 7.3.1 20180303 (Red Hat 7.3.1-5) (x86_64-redhat-linux)]
+  ignore line: [	compiled by GNU C version 7.3.1 20180303 (Red Hat 7.3.1-5)  GMP version 6.0.0  MPFR version 3.1.1  MPC version 1.0.1  isl version isl-0.16.1-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 9297c6e7ca8f6c9f2474dcdc9331bbe8]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/as -v --64 -o CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o /tmp/ccZaFL1y.s]
+  ignore line: [GNU assembler version 2.28 (x86_64-redhat-linux) using BFD version version 2.28-11.el7]
+  ignore line: [COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/]
+  ignore line: [LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+  ignore line: [Linking C executable cmTC_ab2f6]
+  ignore line: [/public/home/ictapp_w/cmake-3.24.4-linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ab2f6.dir/link.txt --verbose=1]
+  ignore line: [/opt/rh/devtoolset-7/root/usr/bin/cc -Wl -rpath=/opt/rh/devtoolset-7/root/usr/lib64 -Wl -rpath=/opt/rh/devtoolset-7/root/usr/lib -v CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -o cmTC_ab2f6 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/opt/rh/devtoolset-7/root/usr/bin/cc]
+  ignore line: [COLLECT_LTO_WRAPPER=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper]
+  ignore line: [Target: x86_64-redhat-linux]
+  ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/devtoolset-7/root/usr --mandir=/opt/rh/devtoolset-7/root/usr/share/man --infodir=/opt/rh/devtoolset-7/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-plugin --with-linker-hash-style=gnu --enable-initfini-array --with-default-libstdcxx-abi=gcc4-compatible --with-isl=/builddir/build/BUILD/gcc-7.3.1-20180303/obj-x86_64-redhat-linux/isl-install --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC) ]
+  ignore line: [COMPILER_PATH=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/]
+  ignore line: [LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib/:/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release/:/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/:/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib/:/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib/:/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64/:/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib/:/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp/:/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib/:/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib/:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_ab2f6' '-mtune=generic' '-march=x86-64']
+  link line: [ /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/collect2 -plugin /opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/liblto_plugin.so -plugin-opt=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper -plugin-opt=-fresolution=/tmp/cc2BqbBC.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_ab2f6 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7 -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib -L/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8 -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release -L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib -L/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib -L/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib -L/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64 -L/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib -L/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp -L/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib -L/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib -L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../.. -rpath=/opt/rh/devtoolset-7/root/usr/lib64 -rpath=/opt/rh/devtoolset-7/root/usr/lib CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o /lib/../lib64/crtn.o]
+    arg [/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/opt/rh/devtoolset-7/root/usr/libexec/gcc/x86_64-redhat-linux/7/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/cc2BqbBC.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--no-add-needed] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_ab2f6] ==> ignore
+    arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+    arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+    arg [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o] ==> obj [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o]
+    arg [-L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7] ==> dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7]
+    arg [-L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64] ==> dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8] ==> dir [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release] ==> dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib] ==> dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64] ==> dir [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64]
+    arg [-L/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib] ==> dir [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib]
+    arg [-L/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp] ==> dir [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib]
+    arg [-L/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib] ==> dir [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib]
+    arg [-L/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../..] ==> dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../..]
+    arg [-rpath=/opt/rh/devtoolset-7/root/usr/lib64] ==> ignore
+    arg [-rpath=/opt/rh/devtoolset-7/root/usr/lib] ==> ignore
+    arg [CMakeFiles/cmTC_ab2f6.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o] ==> obj [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o]
+    arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+  collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+  collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+  collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+  collapse library dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7] ==> [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7]
+  collapse library dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../lib64] ==> [/opt/rh/devtoolset-7/root/usr/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib] ==> [/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/env/../lib/intel64/gcc4.8] ==> [/public/home/ictapp_w/intel/oneapi/tbb/2021.11/lib/intel64/gcc4.8]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//libfabric/lib] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/libfabric/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib/release] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib/release]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0//lib] ==> [/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib] ==> [/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib] ==> [/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64] ==> [/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib] ==> [/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib]
+  collapse library dir [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp] ==> [/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib]
+  collapse library dir [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib] ==> [/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib]
+  collapse library dir [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../..] ==> [/opt/rh/devtoolset-7/root/usr/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit objs: [/lib64/crt1.o;/lib64/crti.o;/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtbegin.o;/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/crtend.o;/lib64/crtn.o]
+  implicit dirs: [/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7;/opt/rh/devtoolset-7/root/usr/lib64;/lib64;/usr/lib64;/public/home/ictapp_w/intel/oneapi/vpl/2021.1.1/lib;/public/home/ictapp_w/intel/oneapi/tbb/2021.11/lib/intel64/gcc4.8;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/libfabric/lib;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib/release;/public/home/ictapp_w/intel/oneapi/mpi/2021.9.0/lib;/public/home/ictapp_w/intel/oneapi/mkl/2023.1.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/ippcp/2021.7.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/ipp/2021.8.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/dpl/2022.3/lib;/public/home/ictapp_w/intel/oneapi/dnnl/2023.1.0/cpu_dpcpp_gpu_dpcpp/lib;/public/home/ictapp_w/intel/oneapi/dal/2023.1.0/lib/intel64;/public/home/ictapp_w/intel/oneapi/compiler/2024.0/lib;/public/home/ictapp_w/intel/oneapi/ccl/2021.9.0/lib/cpu_gpu_dpcpp;/opt/hpc/software/mpi/hpcx/v2.11.0/gcc-7.3.1/lib;/opt/hpc/software/mpi/hpcx/v2.11.0/sharp/lib;/opt/hpc/software/mpi/hpcx/v2.11.0/hcoll/lib;/opt/hpc/software/mpi/hpcx/v2.11.0/ucx_without_rocm/lib;/opt/rh/devtoolset-7/root/usr/lib]
+  implicit fwks: []
+
+
