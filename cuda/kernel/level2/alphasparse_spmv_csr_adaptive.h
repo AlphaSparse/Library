@@ -64,10 +64,7 @@ __launch_bounds__(WG_SIZE)
   // Get the workgroup within this long row ID out of the bottom bits of the row block.
   T wg = row_blocks[gid] & ((1 << WG_BITS) - 1);
 
-  // Any workgroup only calculates, at most, BLOCK_MULTIPLIER*BLOCK_SIZE items in a row.
-  // If there are more items in this row, we assign more workgroups.
-  T vecStart = alpha_mad24((T)wg, (T)BLOCK_MULTIPLIER * BLOCK_SIZE, csr_row_ptr[row]);
-  T vecEnd = min(csr_row_ptr[row + 1], vecStart + BLOCK_MULTIPLIER * BLOCK_SIZE);
+  const T row_offset = csr_row_ptr[row];
 
   V temp_sum = {};
 
@@ -105,10 +102,11 @@ __launch_bounds__(WG_SIZE)
 
     // Stream all of this row block's matrix values into local memory.
     // Perform the matvec in parallel with this work.
-    T col = csr_row_ptr[row] + lid;
-    if (gid != (gridDim.x - 1))
+    const T col = row_offset + lid;
+    const T block_end = csr_row_ptr[stop_row];
+    if (col + BLOCK_SIZE - WG_SIZE < block_end)
     {
-      for (T i = 0; i < BLOCK_SIZE && col + i < nnz; i += WG_SIZE)
+      for (T i = 0; i < BLOCK_SIZE; i += WG_SIZE)
       {
         partialSums[lid + i] = alpha * csr_val[col + i] * x[csr_col_ind[col + i]];
         // alpha_mul(partialSums[lid + i], alpha, csr_val[col + i]);
@@ -146,15 +144,15 @@ __launch_bounds__(WG_SIZE)
       // numThreadsForRed guaranteed to be a power of two, so the clz code below
       // avoids an integer divide. ~2% perf gain in EXTRA_PRECISION.
       // size_t st = lid/numThreadsForRed;
-      T local_row = row + (lid >> (31 - __clz(numThreadsForRed)));
-      T local_first_val = csr_row_ptr[local_row] - csr_row_ptr[row];
-      T local_last_val = csr_row_ptr[local_row + 1] - csr_row_ptr[row];
-      T threadInBlock = lid & (numThreadsForRed - 1);
+      const T local_row = row + (lid >> (31 - __clz(numThreadsForRed)));
+      const T threadInBlock = lid & (numThreadsForRed - 1);
 
       // Not all row blocks are full -- they may have an odd number of rows. As such,
       // we need to ensure that adjacent-groups only work on real data for this rowBlock.
       if (local_row < stop_row)
       {
+        const T local_first_val = csr_row_ptr[local_row] - row_offset;
+        const T local_last_val = csr_row_ptr[local_row + 1] - row_offset;
         // This is dangerous -- will infinite loop if your last value is within
         // numThreadsForRed of MAX_UINT. Noticable performance gain to avoid a
         // long induction variable here, though.
@@ -186,7 +184,10 @@ __launch_bounds__(WG_SIZE)
         // All of our write-outs check to see if the output vector should first be zeroed.
         // If so, just do a write rather than a read-write. Measured to be a slight (~5%)
         // performance improvement.
-        temp_sum = temp_sum + beta * y[local_row];
+        if (beta != V{})
+        {
+          temp_sum = alpha_fma(beta, y[local_row], temp_sum);
+        }
         // alpha_madde(temp_sum, beta, y[local_row]);
         y[local_row] = temp_sum;
       }
@@ -215,7 +216,10 @@ __launch_bounds__(WG_SIZE)
 
         // After you've done the reduction into the temp_sum register,
         // put that into the output for each row.
-        temp_sum = temp_sum + beta * y[local_row];
+        if (beta != V{})
+        {
+          temp_sum = alpha_fma(beta, y[local_row], temp_sum);
+        }
         // alpha_madde(temp_sum, beta, y[local_row]);
 
         y[local_row] = temp_sum;
@@ -240,8 +244,8 @@ __launch_bounds__(WG_SIZE)
       // If there are more items in this row, we use CSR-LongRows.
       temp_sum = V{};
       // alpha_setzero(temp_sum);
-      vecStart = csr_row_ptr[row];
-      vecEnd = csr_row_ptr[row + 1];
+      const T vecStart = csr_row_ptr[row];
+      const T vecEnd = csr_row_ptr[row + 1];
 
       // Load in a bunch of partial results into your register space, rather than LDS (no
       // contention)
@@ -250,7 +254,7 @@ __launch_bounds__(WG_SIZE)
       // things.
       for (T i = vecStart + lid; i < vecEnd; i += WG_SIZE)
       {
-        temp_sum = temp_sum + alpha * csr_val[i] * x[csr_col_ind[i]];
+        temp_sum = alpha_fma(alpha * csr_val[i], x[csr_col_ind[i]], temp_sum);
         // ALPHA_Number tt;
         // alpha_mul(tt, alpha, csr_val[i]);
         // alpha_madde(temp_sum, tt, x[csr_col_ind[i]]);
@@ -266,7 +270,10 @@ __launch_bounds__(WG_SIZE)
       if (lid == 0)
       {
         temp_sum = partialSums[0];
-        temp_sum += beta * y[row];
+        if (beta != V{})
+        {
+          temp_sum = alpha_fma(beta, y[row], temp_sum);
+        }
         // alpha_madde(temp_sum, beta, y[row]);
 
         y[row] = temp_sum;
@@ -323,11 +330,15 @@ __launch_bounds__(WG_SIZE)
     // Load in a bunch of partial results into your register space, rather than LDS (no
     // contention)
     // Then dump the partially reduced answers into the LDS for inter-work-item reduction.
+    const T vecStart = alpha_mad24(
+        (T)wg, (T)BLOCK_MULTIPLIER * BLOCK_SIZE, row_offset);
+    const T vecEnd = min(csr_row_ptr[row + 1],
+                         vecStart + BLOCK_MULTIPLIER * BLOCK_SIZE);
     for (T i = vecStart + lid; i < vecEnd; i += WG_SIZE)
     {
       // temp_sum = alpha_fma(alpha * csr_val[i], x[csr_col_ind[i]], temp_sum);
       V tt = alpha * csr_val[i];
-      temp_sum += tt * x[csr_col_ind[i]];
+      temp_sum = alpha_fma(tt, x[csr_col_ind[i]], temp_sum);
       // alpha_mul(tt, alpha, csr_val[i]);
       // alpha_madde(temp_sum, tt, x[csr_col_ind[i]]);
     }
