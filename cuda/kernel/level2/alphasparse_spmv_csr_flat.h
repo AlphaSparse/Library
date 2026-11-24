@@ -243,7 +243,7 @@ alphasparseStatus_t spmv_csr_flat(alphasparseHandle_t handle,
     constexpr T nnz_per_block = R * BLOCK_SIZE;
     const T GRID_SIZE = ceildivT<T>(nnz, nnz_per_block);
     const T nwarps = GRID_SIZE;
-    const T GRID_SIZE2 = ceildivT<T>(nwarps + m, BLOCK_SIZE);
+    const T GRID_SIZE2 = ceildivT<T>(nwarps + m + 1, BLOCK_SIZE);
     // printf("nwarps: %d\n", nwarps);
     // double time1 = get_time_us();
     // row partition
