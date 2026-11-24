@@ -239,7 +239,7 @@ alphasparseStatus_t spmv_csr_acc(alphasparseHandle_t handle,
     const T GRID_SIZE = ceildivT<T>(nnz, nnz_per_block);
     const T nwarps = GRID_SIZE;
     // printf("nwarps: %d\n", nwarps);
-    const T GRID_SIZE2 = ceildivT<T>(nwarps + m, BLOCK_SIZE);
+    const T GRID_SIZE2 = ceildivT<T>(nwarps + m + 1, BLOCK_SIZE);
     // const T GRID_SIZE3 = ceildivT<T>(nwarps, BLOCK_SIZE);
     const T REDUCE_OPTION = 0;
     // printf("nwarps: %d\n", nwarps);
